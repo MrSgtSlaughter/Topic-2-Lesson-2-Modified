@@ -83,6 +83,14 @@
       align-items: center;
       flex-wrap: wrap;
     }
+    .read-q {
+      background: none;
+      border: 0;
+      color: #2563eb;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0;
+    }
     .mc-option { display: block; margin-bottom: 4px; cursor: pointer; }
     .adhd-hide { display: none; }
     .footer {
@@ -154,7 +162,7 @@
   </style>
 </head>
 <body>
-  <!-- GLOBAL TRANSLATE BAR -->
+  <!-- TRANSLATE BAR + OUR BUTTONS -->
   <div style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:6px 12px;">
     <span class="small" style="font-family:system-ui;">🌍 Translate this entire page:</span>
     <div id="lang-buttons" style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px;">
@@ -169,7 +177,7 @@
       <button type="button" class="lang-btn" data-lang="ko">한국어</button>
       <button type="button" class="lang-btn" data-lang="vi">Tiếng Việt</button>
     </div>
-    <!-- Google widget (hidden-ish, but kept for engine) -->
+    <!-- Google widget – stays in DOM for engine -->
     <div id="google_translate_element" style="display:inline-block;margin-left:6px;"></div>
   </div>
 
@@ -183,7 +191,20 @@
         <div class="small">Submission subject:</div>
         <strong>Topic 2 Lesson 2 Boss Battle</strong>
         <div class="small" style="margin-top:4px;">
-          <button type="button" id="readPage" style="background:none;border:0;color:#2563eb;cursor:pointer;">🔊 Read this in English</button>
+          Audio language:
+          <select id="audioLang" style="font-size:0.7rem;">
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="ar-SA">Arabic</option>
+            <option value="fr-FR">French</option>
+            <option value="pt-PT">Portuguese</option>
+            <option value="sq-AL">Albanian</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+            <option value="zh-TW">Chinese (Traditional)</option>
+            <option value="ko-KR">Korean</option>
+            <option value="vi-VN">Vietnamese</option>
+          </select>
+          <button type="button" id="readPage" style="background:none;border:0;color:#2563eb;cursor:pointer;">🔊 Read this page</button>
         </div>
       </div>
     </header>
@@ -214,11 +235,13 @@
       <input type="text" id="hour" required placeholder="3rd, 5th, etc." />
     </div>
 
-    <!-- questions -->
+    <!-- QUESTIONS -->
     <form id="bossForm" class="card">
+      <!-- 5 -->
       <div class="question" data-q="q5">
         <h3>
           5. Which sentence uses the word <u>CULTURAL TRAIT</u> correctly?
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 16.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q5" value="A" /> Akkadians and Sumerians shared cultural traits.</label>
@@ -228,9 +251,11 @@
         <div id="hint_q5" class="hint"></div>
       </div>
 
+      <!-- 6 -->
       <div class="question" data-q="q6">
         <h3>
           6. Which sentence uses the word <u>GOVERN</u> correctly?
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 15.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q6" value="A" /> I ate a box of candy, I am govern.</label>
@@ -240,9 +265,11 @@
         <div id="hint_q6" class="hint"></div>
       </div>
 
+      <!-- 7 -->
       <div class="question" data-q="q7">
         <h3>
           7. Which sentence uses the word <u>ABUNDANT</u> correctly?
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 15.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q7" value="A" /> The Fertile Crescent had abundant food/crops.</label>
@@ -252,9 +279,11 @@
         <div id="hint_q7" class="hint"></div>
       </div>
 
+      <!-- 8 -->
       <div class="question" data-q="q8">
         <h3>
           8. To control such a large empire, Sargon appointed local ________.
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 16.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q8" value="A" /> jesters</label>
@@ -264,10 +293,11 @@
         <div id="hint_q8" class="hint"></div>
       </div>
 
-      <!-- vocab match -->
+      <!-- 9 -->
       <div class="question" data-q="q9">
         <h3>
           9. Vocabulary Match
+          <button type="button" class="read-q">🔊</button>
           <span class="small">p. 15 (empire, ally, abundant, govern), p. 16 (cultural trait), p. 19 (Hammurabi’s Code).</span>
         </h3>
         <table style="width:100%;font-size:0.85rem;">
@@ -353,10 +383,11 @@
         <div id="hint_q9" class="hint"></div>
       </div>
 
-      <!-- fill in -->
+      <!-- fill-ins -->
       <div class="question" data-q="q10">
         <h3>
           Fill in the Blank
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 15–16.</span>
         </h3>
         <label>10. For __________ of years, the city-states fought among themselves.</label>
@@ -390,9 +421,10 @@
         <div id="hint_q15" class="hint"></div>
       </div>
 
-      <!-- Hammurabi -->
+      <!-- MC hammurabi -->
       <div class="question" data-q="q16">
         <h3>16. A set of laws that governed life in the Babylonian empire is called...
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q16" value="preamble" /> The Preamble</label>
@@ -404,6 +436,7 @@
 
       <div class="question" data-q="q17">
         <h3>17. The rule of law (Hammurabi's Code) established the idea that all members of a society must...
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q17" value="obey" /> obey the law</label>
@@ -415,6 +448,7 @@
 
       <div class="question" data-q="q18">
         <h3>18. Babylonian artists were known for their...
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q18" value="farming" /> farming techniques</label>
@@ -426,6 +460,7 @@
 
       <div class="question" data-q="q19">
         <h3>19. The punishments were based on...
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q19" value="gender" /> Gender</label>
@@ -437,6 +472,7 @@
 
       <div class="question" data-q="q20">
         <h3>20. Who received the harshest punishments?
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q20" value="priests" /> Priests</label>
@@ -448,6 +484,7 @@
 
       <div class="question" data-q="q21">
         <h3>21. There was a minimum wage in Babylonia.
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q21" value="true" /> True</label>
@@ -457,6 +494,7 @@
 
       <div class="question" data-q="q22">
         <h3>22. How many previous codes may have influenced Hammurabi?
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <label class="mc-option"><input type="radio" name="q22" value="1" /> 1</label>
@@ -470,6 +508,7 @@
       <div class="question" data-q="q23">
         <h3>
           23. Show <u>CULTURAL TRAIT</u> (draw or explain)
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 16.</span>
         </h3>
         <textarea name="q23" rows="3" placeholder="Describe a cultural trait (shared language, clothing, religion, music, food)..."></textarea>
@@ -486,6 +525,7 @@
       <div class="question" data-q="q24">
         <h3>
           24. Show <u>HAMMURABI'S CODE</u> (draw or explain)
+          <button type="button" class="read-q">🔊</button>
           <span class="small">Topic 2, p. 19.</span>
         </h3>
         <textarea name="q24" rows="3" placeholder="Describe a rule and a punishment (if someone..., then they...)"></textarea>
@@ -512,7 +552,7 @@
     </div>
   </div>
 
-  <!-- GOOGLE TRANSLATE ENGINE -->
+  <!-- GOOGLE TRANSLATE ENGINE (use https on GitHub) -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -523,14 +563,14 @@
       }, 'google_translate_element');
     }
   </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
     // ====== CONFIG ======
-    const SHEETS_WEBHOOK = "YOUR_WEB_APP_URL_HERE";  // <-- put your Apps Script endpoint here
-    const TEACHER_EMAIL  = "your-email@school.org";   // <-- put your email here
+    const SHEETS_WEBHOOK = "YOUR_WEB_APP_URL_HERE";
+    const TEACHER_EMAIL  = "your-email@school.org";
     const EMAIL_SUBJECT  = "Topic 2 Lesson 2 Boss Battle";
-    const STORAGE_KEY    = "pixeled-topic2-l2-bossbattle-v5";
+    const STORAGE_KEY    = "pixeled-topic2-l2-bossbattle-v6";
 
     // ====== LANGUAGE BUTTONS -> GOOGLE TRANSLATE ======
     function doGTranslate(langPair) {
@@ -539,7 +579,6 @@
       var lang = langPair.split('|')[1];
       var te = document.querySelector('select.goog-te-combo');
       if (!te) {
-        // Google loads slow sometimes
         setTimeout(function(){ doGTranslate(langPair); }, 500);
       } else {
         te.value = lang;
@@ -549,8 +588,7 @@
 
     document.addEventListener('click', function(e) {
       if (!e.target.classList.contains('lang-btn')) return;
-      var lang = e.target.getAttribute('data-lang');
-      // ui highlight
+      const lang = e.target.getAttribute('data-lang');
       document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('lang-btn-active'));
       e.target.classList.add('lang-btn-active');
       doGTranslate('en|' + lang);
@@ -596,25 +634,62 @@
       }
     });
 
-    // ====== ENGLISH READ-ALOUD ONLY ======
-    function speakEnglish(text) {
+    // ====== TTS (multi-language, per question) ======
+    let voices = [];
+    function loadVoices() {
+      voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+    }
+    if (window.speechSynthesis) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function pickVoice(langCode) {
+      if (!voices || !voices.length) return null;
+      // exact
+      let v = voices.find(v => v.lang === langCode);
+      if (v) return v;
+      // prefix
+      const prefix = langCode.split('-')[0];
+      v = voices.find(v => v.lang && v.lang.startsWith(prefix));
+      if (v) return v;
+      // fallback to english
+      v = voices.find(v => v.lang && v.lang.startsWith('en'));
+      return v || null;
+    }
+
+    function speak(text, langCode) {
       if (!window.speechSynthesis) {
-        alert("Read-aloud not supported in this browser.");
+        alert("This browser does not support speech synthesis.");
         return;
       }
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = "en-US";
+      const v = pickVoice(langCode);
+      if (v) utter.voice = v;
+      utter.lang = langCode;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
     }
 
+    // read whole page in selected lang
     document.getElementById("readPage").addEventListener("click", () => {
+      const langCode = document.getElementById("audioLang").value || "en-US";
       const main = document.getElementById("app");
-      const text = main ? main.innerText.replace(/\s+/g, " ").trim() : "Topic 2 Lesson 2 Boss Battle.";
-      speakEnglish(text);
+      const text = main ? main.innerText.replace(/\s+/g," ").trim() : "Topic 2 Lesson 2 Boss Battle.";
+      speak(text, langCode);
     });
 
-    // ====== MIC (speech to text) ======
+    // read individual question
+    document.querySelectorAll(".read-q").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const langCode = document.getElementById("audioLang").value || "en-US";
+        const q = btn.closest(".question");
+        const text = q ? q.innerText.replace("🔊","").trim() : "Question.";
+        speak(text, langCode);
+      });
+    });
+
+    // ====== SPEECH-TO-TEXT for answers ======
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
     function startDictationFor(name) {
       if (!SpeechRec) {
@@ -706,7 +781,6 @@
     }
     function calcScore(){
       let score=0, total=0, wrong=[];
-      // radios
       ["q5","q6","q7","q8","q16","q17","q18","q19","q20","q21","q22"].forEach(q=>{
         total++;
         const corr=ANSWER_KEY[q];
@@ -717,7 +791,6 @@
           wrong.push(q); const h=document.getElementById("hint_"+q); if(h) h.textContent="Check Topic 2, p. 15–19.";
         }
       });
-      // matching
       let matchWrong=false;
       Object.keys(MATCH_KEY).forEach(name=>{
         total++;
@@ -728,10 +801,8 @@
         const h=document.getElementById("hint_q9");
         if(h) h.textContent="Match: p. 15 (empire, ally, abundant, govern) • p. 16 (cultural trait) • p. 19 (Hammurabi).";
       } else {
-        const h=document.getElementById("hint_q9");
-        if(h) h.textContent="";
+        const h=document.getElementById("hint_q9"); if(h) h.textContent="";
       }
-      // fill-ins
       ["q10","q11","q12","q13","q14","q15"].forEach(name=>{
         total++;
         const el=document.querySelector(`input[name="${name}"]`);
@@ -742,7 +813,6 @@
           wrong.push(name); const h=document.getElementById("hint_"+name); if(h) h.textContent=HINTS[name]||"Check the textbook.";
         }
       });
-      // q23
       total++;
       const q23=(document.querySelector(`textarea[name="q23"]`)||{}).value||"";
       if(scoreShort(q23, ["cultural","trait","share","group"])>=0.5){
@@ -750,7 +820,6 @@
       } else {
         wrong.push("q23"); document.getElementById("hint_q23").textContent=HINTS["q23"];
       }
-      // q24
       total++;
       const q24=(document.querySelector(`textarea[name="q24"]`)||{}).value||"";
       if(scoreShort(q24, ["hammurabi","law","punish","code"])>=0.5){
@@ -836,7 +905,7 @@
       }
       SCORE_AREA.textContent=`Auto-scored: ${score} / ${total}. Items to review: ${wrong.join(", ")||"none"}.`;
 
-      // email to teacher
+      // email
       const body=`Student: ${first} ${last}
 Email: ${email}
 Hour: ${hour}
@@ -847,7 +916,7 @@ Source: PixelED Path LLC`;
       const mailto=`mailto:${encodeURIComponent(TEACHER_EMAIL)}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
       window.location.href=mailto;
 
-      // log to sheets
+      // sheets
       if (SHEETS_WEBHOOK && SHEETS_WEBHOOK !== "YOUR_WEB_APP_URL_HERE") {
         fetch(SHEETS_WEBHOOK, {
           method: "POST",
@@ -869,7 +938,7 @@ Source: PixelED Path LLC`;
       }
     });
 
-    // auto-load on open
+    // auto-load
     (function(){
       const raw=localStorage.getItem(STORAGE_KEY);
       if(raw){
