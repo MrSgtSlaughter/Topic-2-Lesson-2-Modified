@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════
+    TIME CHANGE DEBATE WORKSHEET with DODGE THE CLOCKS GAME
+═══════════════════════════════════════════════════════════════════
+
+Created for: Jason Slaughter (jason.slaughter@pccsk12.com)
+
+FIREBASE SETUP REQUIRED FOR SHARED LEADERBOARD:
+1. See FIREBASE_SETUP_GUIDE.txt for detailed instructions
+2. See QUICK_SETUP.txt for quick checklist
+3. Update the firebaseConfig section in this file (line ~45)
+4. Without Firebase, leaderboard works locally per device only
+
+The worksheet will work WITHOUT Firebase configured, but the
+leaderboard will only save on each individual device.
+
+═══════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ The Great Time Change Debate! ⏰</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .clock-emoji {
+            font-size: 3em;
+            animation: swing 2s infinite;
+        }
+        
+        @keyframes swing {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+        
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .data-box {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .question {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .options label {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .options label:hover {
+            background: #e0e0e0;
+            transform: translateX(5px);
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .game-container {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        #gameCanvas {
+            background: #1a1a2e;
+            border-radius: 10px;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .game-controls {
+            margin: 20px 0;
+        }
+        
+        .game-controls button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .game-controls button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        .game-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 15px 0;
+        }
+        
+        .submit-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .submit-section input[type="text"] {
+            max-width: 400px;
+            margin: 15px auto;
+            display: block;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .feedback.partial {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+        
+        .leaderboard {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .leaderboard h3 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+        
+        .leaderboard-entry:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-entry.top1 {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .leaderboard-entry.top2 {
+            background: linear-gradient(135deg, #d4d4d4 0%, #898989 100%);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .leaderboard-entry.top3 {
+            background: linear-gradient(135deg, #e29587 0%, #d66d4b 100%);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .rank {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .player-name {
+            flex: 1;
+        }
+        
+        .player-score {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .read-aloud-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .read-aloud-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .read-aloud-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .read-aloud-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .read-aloud-btn.active {
+            background: #4CAF50;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .section-read-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #2c3e50;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+        
+        .section-read-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .accessibility-info {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .accessibility-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        // Firebase configured for: Jason Slaughter (jason.slaughter@pccsk12.com)
+        // Project: topic-2-lesson-2-bb
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcQF7TB57hhw_OPU_vSWxFi-IE1ctduws",
+            authDomain: "topic-2-lesson-2-bb.firebaseapp.com",
+            databaseURL: "https://topic-2-lesson-2-bb-default-rtdb.firebaseio.com",
+            projectId: "topic-2-lesson-2-bb",
+            storageBucket: "topic-2-lesson-2-bb.firebasestorage.app",
+            messagingSenderId: "785208559159",
+            appId: "1:785208559159:web:a0b35a84cc5fc039cb21b2"
+        };
+        
+        // ============================================
+        // GOOGLE SHEETS CONFIGURATION
+        // ============================================
+        // ✅ CONFIGURED! Submissions will automatically save to Google Sheets
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwQr7FMedQY-uvS3ZW5rgK9e3N02qhz6dUQYaUc6q0UjyZ7a9kRdKKUeDQN9DkyjOSixw/exec";
+        // ============================================
+        
+        // Initialize Firebase
+        let database = null;
+        let firebaseInitialized = false;
+        
+        try {
+            if (firebaseConfig.apiKey !== "YOUR_API_KEY_HERE") {
+                firebase.initializeApp(firebaseConfig);
+                database = firebase.database();
+                firebaseInitialized = true;
+                console.log("✅ Firebase connected! Leaderboard will sync across all devices.");
+            } else {
+                console.log("⚠️ Firebase not configured. Using local-only leaderboard.");
+            }
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            firebaseInitialized = false;
+        }
+        // ============================================
+        
+        const TimeChangeWorksheet = () => {
+            const [studentName, setStudentName] = useState('');
+            const [answers, setAnswers] = useState({
+                q1: '',
+                q2: '',
+                q3: '',
+                q4: '',
+                q5: '',
+                q6: '',
+                q7: ''
+            });
+            const [gameScore, setGameScore] = useState(0);
+            const [gameStarted, setGameStarted] = useState(false);
+            const [submitted, setSubmitted] = useState(false);
+            const [results, setResults] = useState(null);
+            const [leaderboard, setLeaderboard] = useState([]);
+            const [playerNameForGame, setPlayerNameForGame] = useState('');
+            const [showNamePrompt, setShowNamePrompt] = useState(false);
+            const [isReading, setIsReading] = useState(false);
+            const [isPaused, setIsPaused] = useState(false);
+            const canvasRef = useRef(null);
+            const gameRef = useRef(null);
+            const speechRef = useRef(null);
+            
+            // Load leaderboard from Firebase or localStorage on mount
+            useEffect(() => {
+                if (firebaseInitialized && database) {
+                    // Listen to Firebase for real-time updates
+                    const leaderboardRef = database.ref('leaderboard');
+                    leaderboardRef.on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const leaderboardArray = Object.values(data)
+                                .sort((a, b) => b.score - a.score)
+                                .slice(0, 10);
+                            setLeaderboard(leaderboardArray);
+                        }
+                    });
+                    
+                    // Cleanup listener on unmount
+                    return () => leaderboardRef.off();
+                } else {
+                    // Fallback to localStorage
+                    const savedLeaderboard = localStorage.getItem('dodgeClocksLeaderboard');
+                    if (savedLeaderboard) {
+                        setLeaderboard(JSON.parse(savedLeaderboard));
+                    }
+                }
+            }, []);
+            
+            // Save leaderboard to Firebase or localStorage
+            const saveLeaderboard = (newLeaderboard) => {
+                if (firebaseInitialized && database) {
+                    // Save to Firebase
+                    const leaderboardRef = database.ref('leaderboard');
+                    // Convert array to object for Firebase
+                    const leaderboardObj = {};
+                    newLeaderboard.forEach((entry, index) => {
+                        leaderboardObj[`player_${Date.now()}_${index}`] = entry;
+                    });
+                    leaderboardRef.set(leaderboardObj);
+                } else {
+                    // Fallback to localStorage
+                    localStorage.setItem('dodgeClocksLeaderboard', JSON.stringify(newLeaderboard));
+                    setLeaderboard(newLeaderboard);
+                }
+            };
+            
+            // Update leaderboard with new score
+            const updateLeaderboard = (name, score) => {
+                if (firebaseInitialized && database) {
+                    // Add to Firebase directly
+                    const newEntryRef = database.ref('leaderboard').push();
+                    newEntryRef.set({
+                        name,
+                        score,
+                        date: new Date().toLocaleDateString(),
+                        timestamp: Date.now()
+                    });
+                } else {
+                    // Fallback to localStorage
+                    const newEntry = { name, score, date: new Date().toLocaleDateString() };
+                    const updatedLeaderboard = [...leaderboard, newEntry]
+                        .sort((a, b) => b.score - a.score)
+                        .slice(0, 10);
+                    saveLeaderboard(updatedLeaderboard);
+                }
+            };
+            
+            // ============================================
+            // TEXT-TO-SPEECH FUNCTIONS
+            // ============================================
+            
+            // Stop any current speech
+            const stopSpeech = () => {
+                window.speechSynthesis.cancel();
+                setIsReading(false);
+                setIsPaused(false);
+                if (speechRef.current) {
+                    speechRef.current = null;
+                }
+            };
+            
+            // Pause speech
+            const pauseSpeech = () => {
+                if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                    window.speechSynthesis.pause();
+                    setIsPaused(true);
+                }
+            };
+            
+            // Resume speech
+            const resumeSpeech = () => {
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    setIsPaused(false);
+                }
+            };
+            
+            // Read text aloud
+            const readText = (text, title = '') => {
+                // Stop any current speech
+                stopSpeech();
+                
+                // Check if browser supports speech synthesis
+                if (!('speechSynthesis' in window)) {
+                    alert('Sorry, your browser does not support text-to-speech. Please try Chrome, Edge, or Safari.');
+                    return;
+                }
+                
+                // Clean up text for better reading
+                let cleanText = text;
+                
+                // Add title if provided
+                if (title) {
+                    cleanText = title + '. ' + cleanText;
+                }
+                
+                // Remove extra whitespace and clean up
+                cleanText = cleanText
+                    .replace(/\s+/g, ' ')
+                    .replace(/([.!?])\s*([A-Z])/g, '$1 $2')
+                    .trim();
+                
+                // Create speech utterance
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                
+                // Configure speech settings for clarity
+                utterance.rate = 0.9; // Slightly slower for better comprehension
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                // Try to use a high-quality voice
+                const voices = window.speechSynthesis.getVoices();
+                
+                // Prefer these voices in order (they tend to be more natural)
+                const preferredVoices = [
+                    'Google US English',
+                    'Microsoft David',
+                    'Microsoft Zira',
+                    'Samantha',
+                    'Alex',
+                    'Google UK English Female'
+                ];
+                
+                let selectedVoice = voices.find(voice => 
+                    preferredVoices.some(pref => voice.name.includes(pref))
+                );
+                
+                // Fallback to any English voice
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+                }
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Event handlers
+                utterance.onstart = () => {
+                    setIsReading(true);
+                    setIsPaused(false);
+                };
+                
+                utterance.onend = () => {
+                    setIsReading(false);
+                    setIsPaused(false);
+                    speechRef.current = null;
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('Speech error:', event);
+                    setIsReading(false);
+                    setIsPaused(false);
+                };
+                
+                // Store reference and speak
+                speechRef.current = utterance;
+                window.speechSynthesis.speak(utterance);
+            };
+            
+            // Read entire page
+            const readEntirePage = () => {
+                const sections = [
+                    'The Great Time Change Debate! Should we keep Daylight Saving Time? Let\'s explore the data!',
+                    'Background: What is Daylight Saving Time? Daylight Saving Time (DST) is the practice of moving clocks forward by one hour during warmer months so that darkness falls at a later clock time.',
+                    'Fact: About 70 countries use Daylight Saving Time, affecting over 1 billion people worldwide!',
+                    'The Case Against Daylight Saving Time. Studies show a 24% increase in heart attacks on the Monday after spring forward. It takes the average person 3 to 7 days to adjust to the time change. Traffic accidents increase by 6% in the week following the time change.',
+                    'The Case For Daylight Saving Time. Some studies suggest DST reduces electricity usage by 1 to 2% during DST months. More daylight hours in the evening encourage outdoor activities and exercise. Retail businesses report increased sales due to more daylight shopping hours.'
+                ];
+                
+                readText(sections.join(' '));
+            };
+            
+            // Read specific section
+            const readSection = (sectionTitle, sectionContent) => {
+                readText(sectionContent, sectionTitle);
+            };
+            
+            // Load voices (some browsers need this)
+            useEffect(() => {
+                if ('speechSynthesis' in window) {
+                    // Load voices
+                    window.speechSynthesis.getVoices();
+                    
+                    // Some browsers need this event
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        window.speechSynthesis.getVoices();
+                    };
+                }
+                
+                // Cleanup on unmount
+                return () => {
+                    stopSpeech();
+                };
+            }, []);
+            
+            // ============================================
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'c',
+                q3: 'a',
+                q4: 'b'
+            };
+            
+            // Grading function for short answers
+            const gradeShortAnswer = (answer, questionNum) => {
+                const lowerAnswer = answer.toLowerCase().trim();
+                
+                if (questionNum === 'q5') {
+                    // Looking for mentions of sleep, health, accidents, productivity, etc.
+                    const keywords = ['sleep', 'health', 'accident', 'heart', 'stroke', 'tired', 'fatigue', 'productivity', 'mood', 'disrupt'];
+                    const hasKeyword = keywords.some(keyword => lowerAnswer.includes(keyword));
+                    return {
+                        points: hasKeyword ? 3 : (lowerAnswer.length > 20 ? 2 : 0),
+                        feedback: hasKeyword ? 
+                            '✓ Great! You identified key health/safety impacts!' : 
+                            lowerAnswer.length > 20 ? 
+                            '◐ Partial credit - try mentioning specific health or safety impacts like sleep disruption, accidents, or heart health.' :
+                            '✗ Please provide more detail about health or safety impacts.'
+                    };
+                } else if (questionNum === 'q6') {
+                    // Looking for mentions of energy, sunlight, economy, safety, etc.
+                    const keywords = ['energy', 'save', 'light', 'electric', 'economy', 'business', 'retail', 'crime', 'safety', 'outdoor', 'summer', 'sunlight'];
+                    const hasKeyword = keywords.some(keyword => lowerAnswer.includes(keyword));
+                    return {
+                        points: hasKeyword ? 3 : (lowerAnswer.length > 20 ? 2 : 0),
+                        feedback: hasKeyword ? 
+                            '✓ Excellent! You identified key benefits!' : 
+                            lowerAnswer.length > 20 ? 
+                            '◐ Partial credit - try mentioning specific benefits like energy savings, economic impacts, or safety improvements.' :
+                            '✗ Please provide more detail about potential benefits.'
+                    };
+                } else if (questionNum === 'q7') {
+                    // Looking for a reasoned opinion with evidence
+                    const hasOpinion = lowerAnswer.includes('yes') || lowerAnswer.includes('no') || 
+                                     lowerAnswer.includes('should') || lowerAnswer.includes('keep') || 
+                                     lowerAnswer.includes('abolish') || lowerAnswer.includes('permanent');
+                    const hasReasoning = lowerAnswer.length > 30;
+                    
+                    if (hasOpinion && hasReasoning) {
+                        return {
+                            points: 4,
+                            feedback: '✓ Excellent opinion! You stated your position and provided reasoning.'
+                        };
+                    } else if (hasOpinion) {
+                        return {
+                            points: 2,
+                            feedback: '◐ Good start! Try adding more reasoning to support your opinion.'
+                        };
+                    } else {
+                        return {
+                            points: 0,
+                            feedback: '✗ Please state your opinion clearly and explain your reasoning.'
+                        };
+                    }
+                }
+            };
+            
+            const handleSubmit = async () => {
+                if (!studentName.trim()) {
+                    alert('Please enter your name!');
+                    return;
+                }
+                
+                // Calculate score
+                let totalScore = 0;
+                let maxScore = 25; // 4 MC (2 pts each) + 3 short answer (q5=3, q6=3, q7=4) + game (up to 9 pts)
+                const feedback = {};
+                
+                // Grade multiple choice (2 points each)
+                Object.keys(correctAnswers).forEach(q => {
+                    if (answers[q] === correctAnswers[q]) {
+                        totalScore += 2;
+                        feedback[q] = { correct: true, feedback: '✓ Correct!' };
+                    } else {
+                        feedback[q] = { correct: false, feedback: '✗ Incorrect' };
+                    }
+                });
+                
+                // Grade short answers
+                ['q5', 'q6', 'q7'].forEach(q => {
+                    const result = gradeShortAnswer(answers[q], q);
+                    totalScore += result.points;
+                    feedback[q] = { points: result.points, feedback: result.feedback };
+                });
+                
+                // Add game score (capped at 9 points)
+                const gamePoints = Math.min(gameScore, 9);
+                totalScore += gamePoints;
+                
+                const percentage = Math.round((totalScore / maxScore) * 100);
+                
+                setResults({
+                    totalScore,
+                    maxScore,
+                    percentage,
+                    feedback,
+                    gamePoints
+                });
+                
+                // Prepare data for Google Sheets
+                const submissionData = {
+                    timestamp: new Date().toLocaleString(),
+                    studentName: studentName,
+                    totalScore: totalScore,
+                    maxScore: maxScore,
+                    percentage: percentage,
+                    q1: answers.q1,
+                    q1_correct: answers.q1 === correctAnswers.q1,
+                    q2: answers.q2,
+                    q2_correct: answers.q2 === correctAnswers.q2,
+                    q3: answers.q3,
+                    q3_correct: answers.q3 === correctAnswers.q3,
+                    q4: answers.q4,
+                    q4_correct: answers.q4 === correctAnswers.q4,
+                    q5_answer: answers.q5,
+                    q5_points: feedback.q5.points,
+                    q6_answer: answers.q6,
+                    q6_points: feedback.q6.points,
+                    q7_answer: answers.q7,
+                    q7_points: feedback.q7.points,
+                    gameScore: gameScore,
+                    gamePoints: gamePoints
+                };
+                
+                // Send to Google Sheets if configured
+                if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL !== "YOUR_GOOGLE_SCRIPT_URL_HERE") {
+                    try {
+                        const response = await fetch(GOOGLE_SHEETS_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(submissionData)
+                        });
+                        
+                        console.log('✅ Score submitted to Google Sheets successfully!');
+                    } catch (error) {
+                        console.error('Error submitting to Google Sheets:', error);
+                        alert('Note: There was an issue saving to Google Sheets. Your results are still displayed below.');
+                    }
+                } else {
+                    console.log('⚠️ Google Sheets not configured. Set GOOGLE_SHEETS_URL to enable automatic submission.');
+                }
+                
+                // Also prepare email as backup (optional)
+                const emailBody = `
+Student Name: ${studentName}
+Date: ${new Date().toLocaleString()}
+
+TIME CHANGE DEBATE WORKSHEET RESULTS
+====================================
+
+Score: ${totalScore}/${maxScore} (${percentage}%)
+
+Multiple Choice Questions:
+Q1 (Countries using DST): ${answers.q1 === correctAnswers.q1 ? 'Correct ✓' : 'Incorrect ✗'}
+Q2 (Annual deaths): ${answers.q2 === correctAnswers.q2 ? 'Correct ✓' : 'Incorrect ✗'}
+Q3 (Heart attacks): ${answers.q3 === correctAnswers.q3 ? 'Correct ✓' : 'Incorrect ✗'}
+Q4 (Energy savings): ${answers.q4 === correctAnswers.q4 ? 'Correct ✓' : 'Incorrect ✗'}
+
+Short Answer Questions:
+Q5 (Negative impacts): ${feedback.q5.points}/3 points
+${answers.q5}
+
+Q6 (Benefits): ${feedback.q6.points}/3 points
+${answers.q6}
+
+Q7 (Opinion): ${feedback.q7.points}/4 points
+${answers.q7}
+
+Game Score: ${gamePoints}/9 points
+Clocks Dodged: ${gameScore}
+
+====================================
+Generated on ${new Date().toLocaleString()}
+                `.trim();
+                
+                // Optionally open email client (commented out by default since Google Sheets is primary)
+                // const mailtoLink = `mailto:jason.slaughter@pccsk12.com?subject=Time%20Change%20Worksheet%20-%20${encodeURIComponent(studentName)}&body=${encodeURIComponent(emailBody)}`;
+                // window.location.href = mailtoLink;
+                
+                setSubmitted(true);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            
+            // Game logic
+            useEffect(() => {
+                if (!gameStarted) return;
+                
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                
+                // Game state
+                const game = {
+                    player: { x: 375, y: 550, width: 50, height: 50, speed: 8 },
+                    clocks: [],
+                    score: 0,
+                    running: true,
+                    keys: {}
+                };
+                
+                gameRef.current = game;
+                
+                // Create clock objects
+                const createClock = () => {
+                    return {
+                        x: Math.random() * (canvas.width - 40),
+                        y: -40,
+                        width: 40,
+                        height: 40,
+                        speed: 2 + Math.random() * 3
+                    };
+                };
+                
+                // Initialize clocks
+                for (let i = 0; i < 3; i++) {
+                    game.clocks.push(createClock());
+                    game.clocks[i].y = -100 - (i * 150);
+                }
+                
+                // Event listeners
+                const handleKeyDown = (e) => {
+                    game.keys[e.key] = true;
+                };
+                
+                const handleKeyUp = (e) => {
+                    game.keys[e.key] = false;
+                };
+                
+                document.addEventListener('keydown', handleKeyDown);
+                document.addEventListener('keyup', handleKeyUp);
+                
+                // Game loop
+                const gameLoop = () => {
+                    if (!game.running) return;
+                    
+                    // Clear canvas
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw stars
+                    ctx.fillStyle = '#fff';
+                    for (let i = 0; i < 50; i++) {
+                        const x = (i * 37) % canvas.width;
+                        const y = (i * 49) % canvas.height;
+                        ctx.fillRect(x, y, 2, 2);
+                    }
+                    
+                    // Update player
+                    if (game.keys['ArrowLeft'] || game.keys['a']) {
+                        game.player.x = Math.max(0, game.player.x - game.player.speed);
+                    }
+                    if (game.keys['ArrowRight'] || game.keys['d']) {
+                        game.player.x = Math.min(canvas.width - game.player.width, game.player.x + game.player.speed);
+                    }
+                    
+                    // Draw player (emoji style)
+                    ctx.font = '40px Arial';
+                    ctx.fillText('😊', game.player.x, game.player.y + 40);
+                    
+                    // Update and draw clocks
+                    game.clocks.forEach((clock, index) => {
+                        clock.y += clock.speed;
+                        
+                        // Draw clock emoji
+                        ctx.font = '35px Arial';
+                        ctx.fillText('⏰', clock.x, clock.y + 35);
+                        
+                        // Check collision
+                        if (
+                            game.player.x < clock.x + clock.width &&
+                            game.player.x + game.player.width > clock.x &&
+                            game.player.y < clock.y + clock.height &&
+                            game.player.y + game.player.height > clock.y
+                        ) {
+                            game.running = false;
+                            const finalScore = game.score;
+                            setGameScore(finalScore);
+                            setGameStarted(false);
+                            
+                            // Update leaderboard if player has a name
+                            if (playerNameForGame.trim()) {
+                                updateLeaderboard(playerNameForGame, finalScore);
+                            }
+                        }
+                        
+                        // Reset clock if it goes off screen
+                        if (clock.y > canvas.height) {
+                            game.clocks[index] = createClock();
+                            game.score++;
+                        }
+                    });
+                    
+                    // Draw score
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 24px Arial';
+                    ctx.fillText(`Clocks Dodged: ${game.score}`, 10, 30);
+                    
+                    if (game.running) {
+                        requestAnimationFrame(gameLoop);
+                    }
+                };
+                
+                gameLoop();
+                
+                return () => {
+                    document.removeEventListener('keydown', handleKeyDown);
+                    document.removeEventListener('keyup', handleKeyUp);
+                    if (gameRef.current) {
+                        gameRef.current.running = false;
+                    }
+                };
+            }, [gameStarted]);
+            
+            const startGame = () => {
+                if (!playerNameForGame.trim()) {
+                    setShowNamePrompt(true);
+                    return;
+                }
+                setShowNamePrompt(false);
+                setGameStarted(true);
+            };
+            
+            return (
+                <div className="container">
+                    <div className="header">
+                        <div className="clock-emoji">⏰</div>
+                        <h1>The Great Time Change Debate!</h1>
+                        <p style={{fontSize: '1.2em', marginTop: '10px'}}>Should we keep Daylight Saving Time? Let's explore the data! 📊</p>
+                    </div>
+                    
+                    <div className="accessibility-info">
+                        <h3>🔊 Accessibility Feature: Read Aloud</h3>
+                        <p style={{fontSize: '1.1em', lineHeight: '1.6', marginBottom: '15px'}}>
+                            Click the <strong>"🔊 Read This Section"</strong> buttons throughout the worksheet to hear the content read aloud. 
+                            Use the controls in the bottom-right corner to pause, resume, or stop reading at any time.
+                        </p>
+                        <button 
+                            className="section-read-btn" 
+                            style={{fontSize: '1.1em', padding: '12px 30px'}}
+                            onClick={readEntirePage}
+                        >
+                            📖 Read Entire Worksheet
+                        </button>
+                    </div>
+                    
+                    {/* Floating Read Aloud Controls */}
+                    {isReading && (
+                        <div className="read-aloud-controls">
+                            {!isPaused ? (
+                                <button className="read-aloud-btn active" onClick={pauseSpeech}>
+                                    ⏸️ Pause
+                                </button>
+                            ) : (
+                                <button className="read-aloud-btn" onClick={resumeSpeech}>
+                                    ▶️ Resume
+                                </button>
+                            )}
+                            <button className="read-aloud-btn" onClick={stopSpeech}>
+                                ⏹️ Stop
+                            </button>
+                        </div>
+                    )}
+                    
+                    {submitted && results && (
+                        <div className="results">
+                            <h2>🎉 Worksheet Results 🎉</h2>
+                            <div className="score-display">{results.percentage}%</div>
+                            <p style={{fontSize: '1.3em', marginBottom: '20px'}}>
+                                Score: {results.totalScore} out of {results.maxScore} points
+                            </p>
+                            {GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL !== "YOUR_GOOGLE_SCRIPT_URL_HERE" ? (
+                                <div style={{
+                                    background: '#d4edda',
+                                    color: '#155724',
+                                    padding: '15px',
+                                    borderRadius: '10px',
+                                    marginTop: '15px',
+                                    fontWeight: 'bold',
+                                    border: '2px solid #c3e6cb'
+                                }}>
+                                    ✅ Your score has been automatically saved to your teacher's Google Sheet!
+                                </div>
+                            ) : (
+                                <p style={{fontSize: '1.1em', color: '#666'}}>
+                                    Results displayed! (Note: Google Sheets auto-save not configured)
+                                </p>
+                            )}
+                        </div>
+                    )}
+                    
+                    <div className="section">
+                        <h2>📚 Background: What is Daylight Saving Time?</h2>
+                        <button 
+                            className="section-read-btn" 
+                            onClick={() => readSection(
+                                'Background: What is Daylight Saving Time?',
+                                'Daylight Saving Time (DST) is the practice of moving clocks forward by one hour during warmer months so that darkness falls at a later clock time. The idea was first proposed by Benjamin Franklin in 1784, but it wasn\'t widely adopted until World War I. About 70 countries use Daylight Saving Time, affecting over 1 billion people worldwide! In the U.S., DST begins on the second Sunday in March and ends on the first Sunday in November.'
+                            )}
+                        >
+                            🔊 Read This Section
+                        </button>
+                        <p style={{lineHeight: '1.8', fontSize: '1.1em'}}>
+                            Daylight Saving Time (DST) is the practice of moving clocks forward by one hour during warmer months 
+                            so that darkness falls at a later clock time. The idea was first proposed by Benjamin Franklin in 1784, 
+                            but it wasn't widely adopted until World War I.
+                        </p>
+                        
+                        <div className="data-box">
+                            📊 <strong>FACT:</strong> About 70 countries use Daylight Saving Time, affecting over 1 billion people worldwide!
+                        </div>
+                        
+                        <div className="data-box">
+                            📊 <strong>FACT:</strong> In the U.S., DST begins on the second Sunday in March and ends on the first Sunday in November.
+                        </div>
+                    </div>
+                    
+                    <div className="section">
+                        <h2>❌ The Case AGAINST Daylight Saving Time</h2>
+                        <button 
+                            className="section-read-btn" 
+                            onClick={() => readSection(
+                                'The Case Against Daylight Saving Time',
+                                'Studies show a 24% increase in heart attacks on the Monday after spring forward. It takes the average person 3 to 7 days to adjust to the time change. Traffic accidents increase by 6% in the week following the time change. Workplace injuries increase by 5.7% on the Monday after DST begins.'
+                            )}
+                        >
+                            🔊 Read This Section
+                        </button>
+                        
+                        <div className="data-box">
+                            💔 <strong>Health Impact:</strong> Studies show a 24% increase in heart attacks on the Monday after "spring forward"
+                        </div>
+                        
+                        <div className="data-box">
+                            😴 <strong>Sleep Disruption:</strong> It takes the average person 3-7 days to adjust to the time change
+                        </div>
+                        
+                        <div className="data-box">
+                            🚗 <strong>Safety Concern:</strong> Traffic accidents increase by 6% in the week following the time change
+                        </div>
+                        
+                        <div className="data-box">
+                            📉 <strong>Productivity Loss:</strong> Workplace injuries increase by 5.7% on the Monday after DST begins
+                        </div>
+                    </div>
+                    
+                    <div className="section">
+                        <h2>✅ The Case FOR Daylight Saving Time</h2>
+                        <button 
+                            className="section-read-btn" 
+                            onClick={() => readSection(
+                                'The Case For Daylight Saving Time',
+                                'Some studies suggest DST reduces electricity usage by 1 to 2% during DST months. More daylight hours in the evening encourage outdoor activities and exercise. Retail businesses report increased sales due to more daylight shopping hours. FBI data shows crime rates decrease when there\'s more evening daylight.'
+                            )}
+                        >
+                            🔊 Read This Section
+                        </button>
+                        
+                        <div className="data-box">
+                            💡 <strong>Energy Savings:</strong> Some studies suggest DST reduces electricity usage by 1-2% during DST months
+                        </div>
+                        
+                        <div className="data-box">
+                            🏃 <strong>Active Lifestyle:</strong> More daylight hours in the evening encourage outdoor activities and exercise
+                        </div>
+                        
+                        <div className="data-box">
+                            💰 <strong>Economic Benefits:</strong> Retail businesses report increased sales due to more daylight shopping hours
+                        </div>
+                        
+                        <div className="data-box">
+                            🔒 <strong>Crime Reduction:</strong> FBI data shows crime rates decrease when there's more evening daylight
+                        </div>
+                    </div>
+                    
+                    {!submitted && (
+                        <>
+                            <div className="section">
+                                <h2>✏️ Assessment Questions</h2>
+                                <button 
+                                    className="section-read-btn" 
+                                    onClick={() => readSection(
+                                        'Assessment Questions',
+                                        'Now it\'s time to test your knowledge. Answer the multiple choice questions and provide detailed written responses for the short answer questions. Read each question carefully.'
+                                    )}
+                                >
+                                    🔊 Read Instructions
+                                </button>
+                                
+                                <div className="question">
+                                    <h3>1. How many countries currently use Daylight Saving Time?</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 1. How many countries currently use Daylight Saving Time? A. About 30 countries. B. About 70 countries. C. About 150 countries. D. All countries worldwide.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <div className="options">
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q1" 
+                                                value="a"
+                                                checked={answers.q1 === 'a'}
+                                                onChange={(e) => setAnswers({...answers, q1: e.target.value})}
+                                            /> About 30 countries
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q1" 
+                                                value="b"
+                                                checked={answers.q1 === 'b'}
+                                                onChange={(e) => setAnswers({...answers, q1: e.target.value})}
+                                            /> About 70 countries
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q1" 
+                                                value="c"
+                                                checked={answers.q1 === 'c'}
+                                                onChange={(e) => setAnswers({...answers, q1: e.target.value})}
+                                            /> About 150 countries
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q1" 
+                                                value="d"
+                                                checked={answers.q1 === 'd'}
+                                                onChange={(e) => setAnswers({...answers, q1: e.target.value})}
+                                            /> All countries worldwide
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>2. By what percentage do traffic accidents increase in the week after time change?</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 2. By what percentage do traffic accidents increase in the week after time change? A. 2 percent. B. 4 percent. C. 6 percent. D. 10 percent.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <div className="options">
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q2" 
+                                                value="a"
+                                                checked={answers.q2 === 'a'}
+                                                onChange={(e) => setAnswers({...answers, q2: e.target.value})}
+                                            /> 2%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q2" 
+                                                value="b"
+                                                checked={answers.q2 === 'b'}
+                                                onChange={(e) => setAnswers({...answers, q2: e.target.value})}
+                                            /> 4%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q2" 
+                                                value="c"
+                                                checked={answers.q2 === 'c'}
+                                                onChange={(e) => setAnswers({...answers, q2: e.target.value})}
+                                            /> 6%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q2" 
+                                                value="d"
+                                                checked={answers.q2 === 'd'}
+                                                onChange={(e) => setAnswers({...answers, q2: e.target.value})}
+                                            /> 10%
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>3. What happens to heart attack rates on the Monday after "spring forward"?</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 3. What happens to heart attack rates on the Monday after spring forward? A. They increase by 24 percent. B. They decrease by 24 percent. C. They stay the same. D. They increase by 50 percent.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <div className="options">
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q3" 
+                                                value="a"
+                                                checked={answers.q3 === 'a'}
+                                                onChange={(e) => setAnswers({...answers, q3: e.target.value})}
+                                            /> They increase by 24%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q3" 
+                                                value="b"
+                                                checked={answers.q3 === 'b'}
+                                                onChange={(e) => setAnswers({...answers, q3: e.target.value})}
+                                            /> They decrease by 24%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q3" 
+                                                value="c"
+                                                checked={answers.q3 === 'c'}
+                                                onChange={(e) => setAnswers({...answers, q3: e.target.value})}
+                                            /> They stay the same
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q3" 
+                                                value="d"
+                                                checked={answers.q3 === 'd'}
+                                                onChange={(e) => setAnswers({...answers, q3: e.target.value})}
+                                            /> They increase by 50%
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>4. According to supporters, how much does DST reduce electricity usage?</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 4. According to supporters, how much does DST reduce electricity usage? A. 10 to 15 percent. B. 1 to 2 percent. C. 5 to 7 percent. D. It doesn\'t reduce electricity usage.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <div className="options">
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q4" 
+                                                value="a"
+                                                checked={answers.q4 === 'a'}
+                                                onChange={(e) => setAnswers({...answers, q4: e.target.value})}
+                                            /> 10-15%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q4" 
+                                                value="b"
+                                                checked={answers.q4 === 'b'}
+                                                onChange={(e) => setAnswers({...answers, q4: e.target.value})}
+                                            /> 1-2%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q4" 
+                                                value="c"
+                                                checked={answers.q4 === 'c'}
+                                                onChange={(e) => setAnswers({...answers, q4: e.target.value})}
+                                            /> 5-7%
+                                        </label>
+                                        <label>
+                                            <input 
+                                                type="radio" 
+                                                name="q4" 
+                                                value="d"
+                                                checked={answers.q4 === 'd'}
+                                                onChange={(e) => setAnswers({...answers, q4: e.target.value})}
+                                            /> It doesn't reduce electricity usage
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>5. Based on the data, what are two negative impacts of Daylight Saving Time? Explain in detail.</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 5. Based on the data, what are two negative impacts of Daylight Saving Time? Explain in detail. Discuss specific health, safety, or productivity impacts.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <textarea 
+                                        value={answers.q5}
+                                        onChange={(e) => setAnswers({...answers, q5: e.target.value})}
+                                        placeholder="Discuss specific health, safety, or productivity impacts..."
+                                    />
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>6. What are two potential benefits of keeping Daylight Saving Time? Use data from the lesson.</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 6. What are two potential benefits of keeping Daylight Saving Time? Use data from the lesson. Discuss benefits related to energy, economy, safety, or lifestyle.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <textarea 
+                                        value={answers.q6}
+                                        onChange={(e) => setAnswers({...answers, q6: e.target.value})}
+                                        placeholder="Discuss benefits related to energy, economy, safety, or lifestyle..."
+                                    />
+                                </div>
+                                
+                                <div className="question">
+                                    <h3>7. YOUR OPINION: Should we keep Daylight Saving Time or abolish it? Explain your reasoning using evidence from the data.</h3>
+                                    <button 
+                                        className="section-read-btn" 
+                                        style={{fontSize: '0.9em', padding: '8px 15px', marginBottom: '10px'}}
+                                        onClick={() => readText('Question 7. Your opinion. Should we keep Daylight Saving Time or abolish it? Explain your reasoning using evidence from the data. State your position clearly and support it with specific data and reasoning.')}
+                                    >
+                                        🔊 Read Question
+                                    </button>
+                                    <textarea 
+                                        value={answers.q7}
+                                        onChange={(e) => setAnswers({...answers, q7: e.target.value})}
+                                        placeholder="State your position clearly and support it with specific data and reasoning..."
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="game-container">
+                                <h2 style={{color: '#2c3e50', marginBottom: '15px'}}>🎮 BONUS GAME: DODGE THE CLOCKS! 🎮</h2>
+                                <p style={{fontSize: '1.2em', color: '#2c3e50', marginBottom: '20px'}}>
+                                    Use arrow keys or A/D to move. Dodge the falling clocks to earn bonus points!
+                                </p>
+                                
+                                {firebaseInitialized ? (
+                                    <div style={{
+                                        background: '#d4edda',
+                                        color: '#155724',
+                                        padding: '10px 20px',
+                                        borderRadius: '8px',
+                                        marginBottom: '15px',
+                                        fontWeight: 'bold',
+                                        border: '2px solid #c3e6cb'
+                                    }}>
+                                        🌐 LIVE LEADERBOARD - Synced across all devices!
+                                    </div>
+                                ) : (
+                                    <div style={{
+                                        background: '#fff3cd',
+                                        color: '#856404',
+                                        padding: '10px 20px',
+                                        borderRadius: '8px',
+                                        marginBottom: '15px',
+                                        fontWeight: 'bold',
+                                        border: '2px solid #ffeaa7'
+                                    }}>
+                                        ⚠️ Local leaderboard only (this device)
+                                    </div>
+                                )}
+                                
+                                {!gameStarted && (
+                                    <>
+                                        <div className="game-controls">
+                                            {!showNamePrompt ? (
+                                                <>
+                                                    <button onClick={startGame}>
+                                                        🚀 Start Game 🚀
+                                                    </button>
+                                                    {gameScore > 0 && (
+                                                        <div className="game-score">
+                                                            Last Score: {gameScore} clocks dodged! 🏆
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <div style={{marginBottom: '20px'}}>
+                                                    <h3 style={{color: '#2c3e50', marginBottom: '15px'}}>Enter your name for the leaderboard!</h3>
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Your name or nickname"
+                                                        value={playerNameForGame}
+                                                        onChange={(e) => setPlayerNameForGame(e.target.value)}
+                                                        style={{maxWidth: '300px', margin: '0 auto', display: 'block'}}
+                                                        onKeyPress={(e) => {
+                                                            if (e.key === 'Enter' && playerNameForGame.trim()) {
+                                                                startGame();
+                                                            }
+                                                        }}
+                                                    />
+                                                    <button 
+                                                        onClick={startGame}
+                                                        style={{marginTop: '15px'}}
+                                                        disabled={!playerNameForGame.trim()}
+                                                    >
+                                                        ✓ Let's Play!
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        {leaderboard.length > 0 && (
+                                            <div className="leaderboard">
+                                                <h3>🏆 TOP PLAYERS 🏆</h3>
+                                                {leaderboard.map((entry, index) => (
+                                                    <div 
+                                                        key={index} 
+                                                        className={`leaderboard-entry ${
+                                                            index === 0 ? 'top1' : 
+                                                            index === 1 ? 'top2' : 
+                                                            index === 2 ? 'top3' : ''
+                                                        }`}
+                                                    >
+                                                        <span className="rank">
+                                                            {index === 0 ? '🥇' : 
+                                                             index === 1 ? '🥈' : 
+                                                             index === 2 ? '🥉' : 
+                                                             `#${index + 1}`}
+                                                        </span>
+                                                        <span className="player-name">{entry.name}</span>
+                                                        <span className="player-score">{entry.score} ⏰</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                                
+                                <canvas 
+                                    ref={canvasRef}
+                                    id="gameCanvas" 
+                                    width="800" 
+                                    height="600"
+                                    style={{display: gameStarted ? 'block' : 'none'}}
+                                />
+                                
+                                {gameStarted && (
+                                    <p style={{marginTop: '15px', color: '#2c3e50', fontWeight: 'bold'}}>
+                                        Game in progress... Good luck! 🍀
+                                    </p>
+                                )}
+                            </div>
+                            
+                            <div className="submit-section">
+                                <h2 style={{color: '#2c3e50', marginBottom: '20px'}}>📝 Submit Your Work</h2>
+                                <input 
+                                    type="text" 
+                                    placeholder="Enter your full name"
+                                    value={studentName}
+                                    onChange={(e) => setStudentName(e.target.value)}
+                                />
+                                <p style={{margin: '15px 0', color: '#555'}}>
+                                    Click submit to get your grade and automatically save to your teacher's Google Sheet!
+                                </p>
+                                <button className="submit-btn" onClick={handleSubmit}>
+                                    🎓 SUBMIT WORKSHEET 🎓
+                                </button>
+                            </div>
+                        </>
+                    )}
+                    
+                    {submitted && results && (
+                        <div className="section">
+                            <h2>📋 Detailed Feedback</h2>
+                            
+                            <div className="question">
+                                <h3>Multiple Choice Questions (2 points each)</h3>
+                                <div className={`feedback ${results.feedback.q1.correct ? 'correct' : 'incorrect'}`}>
+                                    Q1: {results.feedback.q1.feedback}
+                                </div>
+                                <div className={`feedback ${results.feedback.q2.correct ? 'correct' : 'incorrect'}`}>
+                                    Q2: {results.feedback.q2.feedback}
+                                </div>
+                                <div className={`feedback ${results.feedback.q3.correct ? 'correct' : 'incorrect'}`}>
+                                    Q3: {results.feedback.q3.feedback}
+                                </div>
+                                <div className={`feedback ${results.feedback.q4.correct ? 'correct' : 'incorrect'}`}>
+                                    Q4: {results.feedback.q4.feedback}
+                                </div>
+                            </div>
+                            
+                            <div className="question">
+                                <h3>Short Answer Questions</h3>
+                                <div className={`feedback ${results.feedback.q5.points === 3 ? 'correct' : results.feedback.q5.points > 0 ? 'partial' : 'incorrect'}`}>
+                                    Q5 ({results.feedback.q5.points}/3 points): {results.feedback.q5.feedback}
+                                </div>
+                                <div className={`feedback ${results.feedback.q6.points === 3 ? 'correct' : results.feedback.q6.points > 0 ? 'partial' : 'incorrect'}`}>
+                                    Q6 ({results.feedback.q6.points}/3 points): {results.feedback.q6.feedback}
+                                </div>
+                                <div className={`feedback ${results.feedback.q7.points === 4 ? 'correct' : results.feedback.q7.points > 0 ? 'partial' : 'incorrect'}`}>
+                                    Q7 ({results.feedback.q7.points}/4 points): {results.feedback.q7.feedback}
+                                </div>
+                            </div>
+                            
+                            <div className="question">
+                                <h3>Game Performance</h3>
+                                <div className="feedback correct">
+                                    🎮 Dodge the Clocks: {results.gamePoints}/9 points (Dodged {gameScore} clocks!)
+                                </div>
+                            </div>
+                            
+                            <div style={{marginTop: '30px', textAlign: 'center', padding: '20px', background: '#f0f0f0', borderRadius: '10px'}}>
+                                <h3 style={{color: '#667eea'}}>🌟 Great work on completing the worksheet! 🌟</h3>
+                                <p style={{fontSize: '1.1em', marginTop: '10px'}}>
+                                    Your teacher will receive your results via email.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+        
+        ReactDOM.render(<TimeChangeWorksheet />, document.getElementById('root'));
+    </script>
+</body>
+</html>
