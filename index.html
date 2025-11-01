@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Topic 2 Lesson 2 BOSS BATTLE (Accessible)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #0f172a;
+      --accent: #2563eb;
+      --radius: 14px;
+      --line: 1.5;
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: var(--line);
+      margin: 0;
+      padding: 0;
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 16px 100px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0; font-size: 1.6rem; }
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .pill {
+      background: #e2e8f0;
+      border: 0;
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .pill.active { background: #0f172a; color: #ffffff; }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius);
+      padding: 14px 16px 10px;
+      margin-bottom: 14px;
+    }
+    label { display: block; margin-bottom: 6px; font-weight: 600; }
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 7px 8px;
+      border: 1px solid #cbd5f5;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    textarea { resize: vertical; }
+    .question {
+      margin-bottom: 12px;
+      border-radius: 10px;
+      padding: 6px 4px 4px;
+      transition: background 0.2s;
+    }
+    .question h3 {
+      margin-bottom: 4px;
+      font-size: 1.05rem;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mc-option { display: block; margin-bottom: 4px; cursor: pointer; }
+    .adhd-hide { display: none; }
+    .footer {
+      margin-top: 32px;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #94a3b8;
+    }
+    .dyslexia {
+      font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing: 0.03em;
+    }
+    .high-contrast { background: #0b0f19; color: #ffffff; }
+    .high-contrast .card { background: #111827; border-color: #1f2937; }
+    .high-contrast input,
+    .high-contrast select,
+    .high-contrast textarea { background: #0f172a; color: #ffffff; border-color: #334155; }
+    .spacious { line-height: 1.7; }
+    button.primary {
+      background: #2563eb;
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .small { font-size: 0.8rem; color: #6b7280; }
+    table { border-collapse: collapse; }
+    td { padding: 3px 0; }
+    .highlighted { background: #fef08a; }
+    .mic-btn {
+      background: #fff;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 0.65rem;
+      cursor: pointer;
+      margin-top: 3px;
+    }
+    .hint {
+      font-size: 0.7rem;
+      color: #b45309;
+      margin-top: 4px;
+    }
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .secondary { background: #475569; }
+    .success { background: #0f766e; }
+    /* language buttons */
+    .lang-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      padding: 2px 10px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      line-height: 1.2;
+    }
+    .lang-btn-active {
+      background: #2563eb !important;
+      color: #fff !important;
+      border-color: #2563eb !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- GLOBAL TRANSLATE BAR -->
+  <div style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:6px 12px;">
+    <span class="small" style="font-family:system-ui;">🌍 Translate this entire page:</span>
+    <div id="lang-buttons" style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px;">
+      <button type="button" class="lang-btn" data-lang="en">English</button>
+      <button type="button" class="lang-btn" data-lang="es">Español</button>
+      <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+      <button type="button" class="lang-btn" data-lang="fr">Français</button>
+      <button type="button" class="lang-btn" data-lang="pt">Português</button>
+      <button type="button" class="lang-btn" data-lang="sq">Shqip</button>
+      <button type="button" class="lang-btn" data-lang="zh-CN">中文(简体)</button>
+      <button type="button" class="lang-btn" data-lang="zh-TW">中文(繁體)</button>
+      <button type="button" class="lang-btn" data-lang="ko">한국어</button>
+      <button type="button" class="lang-btn" data-lang="vi">Tiếng Việt</button>
+    </div>
+    <!-- Google widget (hidden-ish, but kept for engine) -->
+    <div id="google_translate_element" style="display:inline-block;margin-left:6px;"></div>
+  </div>
+
+  <div class="wrap" id="app">
+    <header>
+      <div>
+        <h1>Topic 2 Lesson 2 BOSS BATTLE</h1>
+        <p class="small">Use Topic 2 in the textbook PDF: p. 15 (empire, ally, abundant, govern), p. 16 (Sargon, cultural traits), p. 19 (Hammurabi’s Code).</p>
+      </div>
+      <div style="text-align:right;">
+        <div class="small">Submission subject:</div>
+        <strong>Topic 2 Lesson 2 Boss Battle</strong>
+        <div class="small" style="margin-top:4px;">
+          <button type="button" id="readPage" style="background:none;border:0;color:#2563eb;cursor:pointer;">🔊 Read this in English</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- accessibility controls -->
+    <div class="controls">
+      <button type="button" class="pill" data-mode="dyslexia">Dyslexia font</button>
+      <button type="button" class="pill" data-mode="contrast">High contrast</button>
+      <button type="button" class="pill" data-mode="spacing">Extra spacing</button>
+      <button type="button" class="pill" data-mode="adhd">ADHD focus</button>
+      <button type="button" class="pill" data-mode="highlight">Highlighter</button>
+    </div>
+
+    <!-- student info -->
+    <div class="card">
+      <h2>Student Info &amp; Submittal</h2>
+      <p class="small">Fill this out so scoring + email + sheet logging works.</p>
+      <label for="student_email">Student Email *</label>
+      <input type="email" id="student_email" required placeholder="student@pccsk12.com" />
+
+      <label for="first_name">First Name *</label>
+      <input type="text" id="first_name" required />
+
+      <label for="last_name">Last Name *</label>
+      <input type="text" id="last_name" required />
+
+      <label for="hour">Hour / Period *</label>
+      <input type="text" id="hour" required placeholder="3rd, 5th, etc." />
+    </div>
+
+    <!-- questions -->
+    <form id="bossForm" class="card">
+      <div class="question" data-q="q5">
+        <h3>
+          5. Which sentence uses the word <u>CULTURAL TRAIT</u> correctly?
+          <span class="small">Topic 2, p. 16.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q5" value="A" /> Akkadians and Sumerians shared cultural traits.</label>
+        <label class="mc-option"><input type="radio" name="q5" value="B" /> Sumerians had a low supply of cultural traits.</label>
+        <label class="mc-option"><input type="radio" name="q5" value="C" /> Cultural traits are never passed to other generations.</label>
+        <label class="mc-option"><input type="radio" name="q5" value="D" /> Akkadians tried to grow their cultural traits.</label>
+        <div id="hint_q5" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q6">
+        <h3>
+          6. Which sentence uses the word <u>GOVERN</u> correctly?
+          <span class="small">Topic 2, p. 15.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q6" value="A" /> I ate a box of candy, I am govern.</label>
+        <label class="mc-option"><input type="radio" name="q6" value="B" /> There are many rules that govern our society.</label>
+        <label class="mc-option"><input type="radio" name="q6" value="C" /> I had to duck because a govern was flying at me.</label>
+        <label class="mc-option"><input type="radio" name="q6" value="D" /> There are many governs that control our society.</label>
+        <div id="hint_q6" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q7">
+        <h3>
+          7. Which sentence uses the word <u>ABUNDANT</u> correctly?
+          <span class="small">Topic 2, p. 15.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q7" value="A" /> The Fertile Crescent had abundant food/crops.</label>
+        <label class="mc-option"><input type="radio" name="q7" value="B" /> The empty plate was full of abundance.</label>
+        <label class="mc-option"><input type="radio" name="q7" value="C" /> A bow shot abundant.</label>
+        <label class="mc-option"><input type="radio" name="q7" value="D" /> Many resources were hard to abundant.</label>
+        <div id="hint_q7" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q8">
+        <h3>
+          8. To control such a large empire, Sargon appointed local ________.
+          <span class="small">Topic 2, p. 16.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q8" value="A" /> jesters</label>
+        <label class="mc-option"><input type="radio" name="q8" value="B" /> warriors</label>
+        <label class="mc-option"><input type="radio" name="q8" value="C" /> rulers</label>
+        <label class="mc-option"><input type="radio" name="q8" value="D" /> priests</label>
+        <div id="hint_q8" class="hint"></div>
+      </div>
+
+      <!-- vocab match -->
+      <div class="question" data-q="q9">
+        <h3>
+          9. Vocabulary Match
+          <span class="small">p. 15 (empire, ally, abundant, govern), p. 16 (cultural trait), p. 19 (Hammurabi’s Code).</span>
+        </h3>
+        <table style="width:100%;font-size:0.85rem;">
+          <tr><td>Empire</td>
+            <td>
+              <select name="q9_empire">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>Ally</td>
+            <td>
+              <select name="q9_ally">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>Cultural Trait</td>
+            <td>
+              <select name="q9_cultural_trait">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>Hammurabi's Code</td>
+            <td>
+              <select name="q9_hammurabi">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>Abundant</td>
+            <td>
+              <select name="q9_abundant">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+          <tr><td>Govern</td>
+            <td>
+              <select name="q9_govern">
+                <option value="">-- choose --</option>
+                <option value="state_containing">A state containing several countries or territories</option>
+                <option value="independent_state">An independent state that works with other states</option>
+                <option value="idea_way">An idea or way of doing things common in a culture</option>
+                <option value="set_laws">A set of laws that governed life</option>
+                <option value="plentiful">Plentiful</option>
+                <option value="to_control">To control or strongly influence</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <div id="hint_q9" class="hint"></div>
+      </div>
+
+      <!-- fill in -->
+      <div class="question" data-q="q10">
+        <h3>
+          Fill in the Blank
+          <span class="small">Topic 2, p. 15–16.</span>
+        </h3>
+        <label>10. For __________ of years, the city-states fought among themselves.</label>
+        <input type="text" name="q10" />
+        <button type="button" class="mic-btn" data-mic="q10">🎤</button>
+        <div id="hint_q10" class="hint"></div>
+
+        <label>11. An _________ is a state containing several countries or territories.</label>
+        <input type="text" name="q11" />
+        <button type="button" class="mic-btn" data-mic="q11">🎤</button>
+        <div id="hint_q11" class="hint"></div>
+
+        <label>12. An ________ is an independent state that works with other states to achieve a shared military or political goal.</label>
+        <input type="text" name="q12" />
+        <button type="button" class="mic-btn" data-mic="q12">🎤</button>
+        <div id="hint_q12" class="hint"></div>
+
+        <label>13. During the 2300s BCE, an Akkadian man named _________ became king of the Sumerian city-state of Kish.</label>
+        <input type="text" name="q13" />
+        <button type="button" class="mic-btn" data-mic="q13">🎤</button>
+        <div id="hint_q13" class="hint"></div>
+
+        <label>14. The Akkadians and Sumerians shared some__________.</label>
+        <input type="text" name="q14" />
+        <button type="button" class="mic-btn" data-mic="q14">🎤</button>
+        <div id="hint_q14" class="hint"></div>
+
+        <label>15. While the Fertile Crescent provided ____________ crops, it had few trees and did not provide any minerals.</label>
+        <input type="text" name="q15" />
+        <button type="button" class="mic-btn" data-mic="q15">🎤</button>
+        <div id="hint_q15" class="hint"></div>
+      </div>
+
+      <!-- Hammurabi -->
+      <div class="question" data-q="q16">
+        <h3>16. A set of laws that governed life in the Babylonian empire is called...
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q16" value="preamble" /> The Preamble</label>
+        <label class="mc-option"><input type="radio" name="q16" value="constitution" /> The Constitution</label>
+        <label class="mc-option"><input type="radio" name="q16" value="hammurabi" /> Hammurabi's Code</label>
+        <label class="mc-option"><input type="radio" name="q16" value="will" /> Will of the People</label>
+        <div id="hint_q16" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q17">
+        <h3>17. The rule of law (Hammurabi's Code) established the idea that all members of a society must...
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q17" value="obey" /> obey the law</label>
+        <label class="mc-option"><input type="radio" name="q17" value="taxes" /> pay taxes</label>
+        <label class="mc-option"><input type="radio" name="q17" value="liveclose" /> live close by</label>
+        <label class="mc-option"><input type="radio" name="q17" value="providefood" /> provide food</label>
+        <div id="hint_q17" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q18">
+        <h3>18. Babylonian artists were known for their...
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q18" value="farming" /> farming techniques</label>
+        <label class="mc-option"><input type="radio" name="q18" value="pictures" /> pictures</label>
+        <label class="mc-option"><input type="radio" name="q18" value="language" /> language</label>
+        <label class="mc-option"><input type="radio" name="q18" value="stone" /> stone and bronze sculptures</label>
+        <div id="hint_q18" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q19">
+        <h3>19. The punishments were based on...
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q19" value="gender" /> Gender</label>
+        <label class="mc-option"><input type="radio" name="q19" value="social" /> Social class</label>
+        <label class="mc-option"><input type="radio" name="q19" value="height" /> Height</label>
+        <label class="mc-option"><input type="radio" name="q19" value="weight" /> Weight</label>
+        <div id="hint_q19" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q20">
+        <h3>20. Who received the harshest punishments?
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q20" value="priests" /> Priests</label>
+        <label class="mc-option"><input type="radio" name="q20" value="slaves" /> Slaves</label>
+        <label class="mc-option"><input type="radio" name="q20" value="warriors" /> Warriors</label>
+        <label class="mc-option"><input type="radio" name="q20" value="hunters" /> Hunters</label>
+        <div id="hint_q20" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q21">
+        <h3>21. There was a minimum wage in Babylonia.
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q21" value="true" /> True</label>
+        <label class="mc-option"><input type="radio" name="q21" value="false" /> False</label>
+        <div id="hint_q21" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q22">
+        <h3>22. How many previous codes may have influenced Hammurabi?
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <label class="mc-option"><input type="radio" name="q22" value="1" /> 1</label>
+        <label class="mc-option"><input type="radio" name="q22" value="2" /> 2</label>
+        <label class="mc-option"><input type="radio" name="q22" value="3" /> 3</label>
+        <label class="mc-option"><input type="radio" name="q22" value="4" /> 4</label>
+        <div id="hint_q22" class="hint"></div>
+      </div>
+
+      <!-- draw / describe -->
+      <div class="question" data-q="q23">
+        <h3>
+          23. Show <u>CULTURAL TRAIT</u> (draw or explain)
+          <span class="small">Topic 2, p. 16.</span>
+        </h3>
+        <textarea name="q23" rows="3" placeholder="Describe a cultural trait (shared language, clothing, religion, music, food)..."></textarea>
+        <button type="button" class="mic-btn" data-mic="q23">🎤</button>
+        <p class="small" style="margin-top:6px;">Or draw it:</p>
+        <button type="button" class="mic-btn" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
+        <label class="small">Paste link:</label>
+        <input type="text" name="q23_drawing" placeholder="https://docs.google.com/drawings/..." />
+        <label class="small">Or upload image:</label>
+        <input type="file" name="q23_image" accept="image/*" />
+        <div id="hint_q23" class="hint"></div>
+      </div>
+
+      <div class="question" data-q="q24">
+        <h3>
+          24. Show <u>HAMMURABI'S CODE</u> (draw or explain)
+          <span class="small">Topic 2, p. 19.</span>
+        </h3>
+        <textarea name="q24" rows="3" placeholder="Describe a rule and a punishment (if someone..., then they...)"></textarea>
+        <button type="button" class="mic-btn" data-mic="q24">🎤</button>
+        <p class="small" style="margin-top:6px;">Or draw it:</p>
+        <button type="button" class="mic-btn" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
+        <label class="small">Paste link:</label>
+        <input type="text" name="q24_drawing" placeholder="https://docs.google.com/drawings/..." />
+        <label class="small">Or upload image:</label>
+        <input type="file" name="q24_image" accept="image/*" />
+        <div id="hint_q24" class="hint"></div>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="primary success" id="saveLocal">Save Progress (local)</button>
+        <button type="button" class="primary secondary" id="loadLocal">Load Progress</button>
+        <button type="button" class="primary" id="submitBtn">Submit + Email + Log</button>
+      </div>
+      <p class="small" id="scoreArea"></p>
+    </form>
+
+    <div class="footer">
+      Adapted for accessibility · Topic 2 Lesson 2 BOSS BATTLE · <strong>PixelED Path LLC</strong>
+    </div>
+  </div>
+
+  <!-- GOOGLE TRANSLATE ENGINE -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,es,ar,fr,pt,sq,zh-CN,zh-TW,ko,vi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    // ====== CONFIG ======
+    const SHEETS_WEBHOOK = "YOUR_WEB_APP_URL_HERE";  // <-- put your Apps Script endpoint here
+    const TEACHER_EMAIL  = "your-email@school.org";   // <-- put your email here
+    const EMAIL_SUBJECT  = "Topic 2 Lesson 2 Boss Battle";
+    const STORAGE_KEY    = "pixeled-topic2-l2-bossbattle-v5";
+
+    // ====== LANGUAGE BUTTONS -> GOOGLE TRANSLATE ======
+    function doGTranslate(langPair) {
+      if (langPair.value) langPair = langPair.value;
+      if (langPair === '') return;
+      var lang = langPair.split('|')[1];
+      var te = document.querySelector('select.goog-te-combo');
+      if (!te) {
+        // Google loads slow sometimes
+        setTimeout(function(){ doGTranslate(langPair); }, 500);
+      } else {
+        te.value = lang;
+        te.dispatchEvent(new Event('change'));
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.classList.contains('lang-btn')) return;
+      var lang = e.target.getAttribute('data-lang');
+      // ui highlight
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('lang-btn-active'));
+      e.target.classList.add('lang-btn-active');
+      doGTranslate('en|' + lang);
+    });
+
+    // ====== ACCESSIBILITY TOGGLES ======
+    const pills = document.querySelectorAll(".pill");
+    const body  = document.body;
+    let adhdMode = false;
+    let highlightMode = false;
+
+    pills.forEach(p => {
+      p.addEventListener("click", () => {
+        p.classList.toggle("active");
+        const mode = p.dataset.mode;
+        if (mode === "dyslexia") body.classList.toggle("dyslexia");
+        if (mode === "contrast") body.classList.toggle("high-contrast");
+        if (mode === "spacing") body.classList.toggle("spacious");
+        if (mode === "adhd") { adhdMode = !adhdMode; applyADHDMode(adhdMode); }
+        if (mode === "highlight") { highlightMode = !highlightMode; }
+      });
+    });
+
+    function applyADHDMode(on) {
+      const qs = document.querySelectorAll(".question");
+      if (!on) {
+        qs.forEach(q => q.classList.remove("adhd-hide"));
+        return;
+      }
+      qs.forEach((q, i) => {
+        if (i === 0) q.classList.remove("adhd-hide");
+        else q.classList.add("adhd-hide");
+      });
+    }
+
+    document.addEventListener("click", (e) => {
+      const q = e.target.closest(".question");
+      if (highlightMode && q) q.classList.toggle("highlighted");
+      if (adhdMode && q) {
+        const all = Array.from(document.querySelectorAll(".question"));
+        const i = all.indexOf(q);
+        if (i >= 0 && i < all.length - 1) all[i+1].classList.remove("adhd-hide");
+      }
+    });
+
+    // ====== ENGLISH READ-ALOUD ONLY ======
+    function speakEnglish(text) {
+      if (!window.speechSynthesis) {
+        alert("Read-aloud not supported in this browser.");
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+
+    document.getElementById("readPage").addEventListener("click", () => {
+      const main = document.getElementById("app");
+      const text = main ? main.innerText.replace(/\s+/g, " ").trim() : "Topic 2 Lesson 2 Boss Battle.";
+      speakEnglish(text);
+    });
+
+    // ====== MIC (speech to text) ======
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    function startDictationFor(name) {
+      if (!SpeechRec) {
+        alert("Speech recognition not supported in this browser.");
+        return;
+      }
+      const rec = new SpeechRec();
+      rec.lang = "en-US";
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      rec.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        const inp = document.querySelector(`[name="${name}"]`);
+        if (inp) inp.value = transcript.toLowerCase();
+      };
+      rec.start();
+    }
+    document.querySelectorAll("[data-mic]").forEach(btn => {
+      btn.addEventListener("click", () => startDictationFor(btn.dataset.mic));
+    });
+
+    // ====== AUTOGRADER ======
+    const ANSWER_KEY = {
+      q5: "A",
+      q6: "B",
+      q7: "A",
+      q8: "C",
+      q10: "thousands",
+      q11: "empire",
+      q12: "ally",
+      q13: "sargon",
+      q14: "cultural traits",
+      q15: "abundant",
+      q16: "hammurabi",
+      q17: "obey",
+      q18: "stone",
+      q19: "social",
+      q20: "slaves",
+      q21: "true",
+      q22: "3"
+    };
+    const MATCH_KEY = {
+      q9_empire: "state_containing",
+      q9_ally: "independent_state",
+      q9_cultural_trait: "idea_way",
+      q9_hammurabi: "set_laws",
+      q9_abundant: "plentiful",
+      q9_govern: "to_control"
+    };
+    const HINTS = {
+      q10: "Topic 2, p. 15.",
+      q11: "Topic 2, p. 15.",
+      q12: "Topic 2, p. 15.",
+      q13: "Topic 2, p. 16.",
+      q14: "Topic 2, p. 16.",
+      q15: "Topic 2, p. 15.",
+      q23: "Topic 2, p. 16.",
+      q24: "Topic 2, p. 19."
+    };
+
+    function editDistance(a,b){
+      a=a.toLowerCase(); b=b.toLowerCase();
+      const dp=Array.from({length:a.length+1},()=>Array(b.length+1).fill(0));
+      for(let i=0;i<=a.length;i++) dp[i][0]=i;
+      for(let j=0;j<=b.length;j++) dp[0][j]=j;
+      for(let i=1;i<=a.length;i++){
+        for(let j=1;j<=b.length;j++){
+          if(a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1];
+          else dp[i][j]=Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1])+1;
+        }
+      }
+      return dp[a.length][b.length];
+    }
+    function isFuzzyCorrect(student, expected){
+      if(!student) return false;
+      student=student.trim().toLowerCase();
+      expected=expected.trim().toLowerCase();
+      if(student===expected) return true;
+      const dist=editDistance(student, expected);
+      const maxLen=Math.max(student.length, expected.length);
+      return (1 - dist/maxLen) >= 0.7;
+    }
+    function scoreShort(text, keywords){
+      if(!text) return 0;
+      text=text.toLowerCase();
+      let hits=0;
+      keywords.forEach(k=>{ if(text.includes(k)) hits++; });
+      return hits / keywords.length;
+    }
+    function calcScore(){
+      let score=0, total=0, wrong=[];
+      // radios
+      ["q5","q6","q7","q8","q16","q17","q18","q19","q20","q21","q22"].forEach(q=>{
+        total++;
+        const corr=ANSWER_KEY[q];
+        const val=(document.querySelector(`input[name="${q}"]:checked`)||{}).value;
+        if(val && val.toLowerCase()===corr.toLowerCase()){
+          score++; const h=document.getElementById("hint_"+q); if(h) h.textContent="";
+        } else {
+          wrong.push(q); const h=document.getElementById("hint_"+q); if(h) h.textContent="Check Topic 2, p. 15–19.";
+        }
+      });
+      // matching
+      let matchWrong=false;
+      Object.keys(MATCH_KEY).forEach(name=>{
+        total++;
+        const sel=document.querySelector(`select[name="${name}"]`);
+        if(sel && sel.value===MATCH_KEY[name]) score++; else matchWrong=true;
+      });
+      if(matchWrong){
+        const h=document.getElementById("hint_q9");
+        if(h) h.textContent="Match: p. 15 (empire, ally, abundant, govern) • p. 16 (cultural trait) • p. 19 (Hammurabi).";
+      } else {
+        const h=document.getElementById("hint_q9");
+        if(h) h.textContent="";
+      }
+      // fill-ins
+      ["q10","q11","q12","q13","q14","q15"].forEach(name=>{
+        total++;
+        const el=document.querySelector(`input[name="${name}"]`);
+        const val=(el?.value||"").trim();
+        if(isFuzzyCorrect(val, ANSWER_KEY[name])){
+          score++; const h=document.getElementById("hint_"+name); if(h) h.textContent="";
+        } else {
+          wrong.push(name); const h=document.getElementById("hint_"+name); if(h) h.textContent=HINTS[name]||"Check the textbook.";
+        }
+      });
+      // q23
+      total++;
+      const q23=(document.querySelector(`textarea[name="q23"]`)||{}).value||"";
+      if(scoreShort(q23, ["cultural","trait","share","group"])>=0.5){
+        score++; document.getElementById("hint_q23").textContent="";
+      } else {
+        wrong.push("q23"); document.getElementById("hint_q23").textContent=HINTS["q23"];
+      }
+      // q24
+      total++;
+      const q24=(document.querySelector(`textarea[name="q24"]`)||{}).value||"";
+      if(scoreShort(q24, ["hammurabi","law","punish","code"])>=0.5){
+        score++; document.getElementById("hint_q24").textContent="";
+      } else {
+        wrong.push("q24"); document.getElementById("hint_q24").textContent=HINTS["q24"];
+      }
+      return {score,total,wrong};
+    }
+
+    // ====== LOCAL SAVE / LOAD ======
+    function collectState(){
+      const data={};
+      data.student_email=document.getElementById("student_email").value;
+      data.first_name=document.getElementById("first_name").value;
+      data.last_name=document.getElementById("last_name").value;
+      data.hour=document.getElementById("hour").value;
+      data.inputs={};
+      document.querySelectorAll("input,select,textarea").forEach(el=>{
+        if(el.type==="radio"){
+          if(el.checked) data.inputs[el.name]=el.value;
+        } else if(el.type!=="file"){
+          data.inputs[el.name||el.id]=el.value;
+        }
+      });
+      data.highlighted=Array.from(document.querySelectorAll(".question"))
+        .filter(q=>q.classList.contains("highlighted"))
+        .map(q=>q.dataset.q);
+      data.adhdMode=adhdMode;
+      data.highlightMode=highlightMode;
+      return data;
+    }
+    function applyState(data){
+      if(!data) return;
+      document.getElementById("student_email").value=data.student_email||"";
+      document.getElementById("first_name").value=data.first_name||"";
+      document.getElementById("last_name").value=data.last_name||"";
+      document.getElementById("hour").value=data.hour||"";
+      const inputs=data.inputs||{};
+      Object.keys(inputs).forEach(key=>{
+        const val=inputs[key];
+        const radios=document.querySelectorAll(`input[type="radio"][name="${key}"]`);
+        if(radios.length){
+          radios.forEach(r=>r.checked=(r.value===val));
+        } else {
+          const el=document.querySelector(`[name="${key}"]`)||document.getElementById(key);
+          if(el && el.type!=="file") el.value=val;
+        }
+      });
+      document.querySelectorAll(".question").forEach(q=>q.classList.remove("highlighted"));
+      (data.highlighted||[]).forEach(id=>{
+        const q=document.querySelector(`.question[data-q="${id}"]`);
+        if(q) q.classList.add("highlighted");
+      });
+      if(data.adhdMode){ adhdMode=true; applyADHDMode(true); }
+      highlightMode=!!data.highlightMode;
+    }
+
+    document.getElementById("saveLocal").addEventListener("click", ()=>{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState()));
+      alert("Saved locally on this device.");
+    });
+    document.getElementById("loadLocal").addEventListener("click", ()=>{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(!raw){ alert("No saved progress on this device."); return; }
+      applyState(JSON.parse(raw));
+      alert("Loaded saved progress.");
+    });
+
+    // ====== SUBMIT ======
+    const SUBMIT_BTN=document.getElementById("submitBtn");
+    const SCORE_AREA=document.getElementById("scoreArea");
+
+    SUBMIT_BTN.addEventListener("click", ()=>{
+      const {score,total,wrong}=calcScore();
+      const email=document.getElementById("student_email").value.trim();
+      const first=document.getElementById("first_name").value.trim();
+      const last=document.getElementById("last_name").value.trim();
+      const hour=document.getElementById("hour").value.trim();
+      if(!email||!first||!last||!hour){
+        alert("Please complete student info first.");
+        return;
+      }
+      SCORE_AREA.textContent=`Auto-scored: ${score} / ${total}. Items to review: ${wrong.join(", ")||"none"}.`;
+
+      // email to teacher
+      const body=`Student: ${first} ${last}
+Email: ${email}
+Hour: ${hour}
+Score (auto): ${score}/${total}
+Wrong/needs review: ${wrong.join(", ")||"none"}
+Assignment: Topic 2 Lesson 2 Boss Battle
+Source: PixelED Path LLC`;
+      const mailto=`mailto:${encodeURIComponent(TEACHER_EMAIL)}?subject=${encodeURIComponent(EMAIL_SUBJECT)}&body=${encodeURIComponent(body)}`;
+      window.location.href=mailto;
+
+      // log to sheets
+      if (SHEETS_WEBHOOK && SHEETS_WEBHOOK !== "YOUR_WEB_APP_URL_HERE") {
+        fetch(SHEETS_WEBHOOK, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            timestamp: new Date().toISOString(),
+            assignment: "Topic 2 Lesson 2 Boss Battle",
+            student_email: email,
+            first_name: first,
+            last_name: last,
+            hour: hour,
+            score: score,
+            total: total,
+            wrong: wrong,
+            source: "PixelED Path LLC"
+          })
+        }).catch(err => console.warn("Sheets error", err));
+      }
+    });
+
+    // auto-load on open
+    (function(){
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        try { applyState(JSON.parse(raw)); } catch(e){}
+      }
+    })();
+  </script>
+</body>
+</html>
