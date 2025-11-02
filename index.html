@@ -5,7 +5,7 @@
   <title>Topic 2 Lesson 2 BOSS BATTLE (Accessible) — PixelED Path LLC</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Google Fonts for read-friendly faces -->
+  <!-- Read-friendly fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 
   <style>
@@ -92,14 +92,6 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .read-q {
-      background: none;
-      border: 0;
-      color: #2563eb;
-      cursor: pointer;
-      font-size: 0.8rem;
-      padding: 0;
-    }
     .mc-option { display: block; margin-bottom: 4px; cursor: pointer; }
     .adhd-hide { display: none; }
     .footer {
@@ -126,15 +118,6 @@
     table { border-collapse: collapse; }
     td { padding: 3px 0; }
     .highlighted { background: #fef08a; }
-    .mic-btn {
-      background: #fff;
-      border: 1px solid #94a3b8;
-      border-radius: 6px;
-      padding: 2px 6px;
-      font-size: 0.65rem;
-      cursor: pointer;
-      margin-top: 3px;
-    }
     .hint {
       font-size: 0.7rem;
       color: #b45309;
@@ -185,19 +168,54 @@
       font-size: 0.7rem;
       color: #475569;
     }
-    .tts-warning {
-      display: none;
-      background: #fef3c7;
-      color: #7c2d12;
-      padding: 6px 8px;
-      border-radius: 6px;
-      margin-top: 6px;
+    /* STUDENT DIRECTIONS BANNER */
+    .student-banner {
+      background: #f97316;
+      color: #fff;
+      padding: 10px 14px 10px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      border-bottom: 4px solid #fb923c;
+    }
+    .student-banner strong {
+      font-size: 1rem;
+    }
+    .key {
+      background: #fff;
+      color: #0f172a;
+      padding: 3px 10px 4px;
+      border-radius: 8px;
+      font-weight: 700;
+      display: inline-block;
+      min-width: 45px;
+      text-align: center;
+    }
+    .student-banner small {
       font-size: 0.7rem;
+      opacity: 0.9;
+    }
+    .mic-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5f5;
+      border-radius: 999px;
+      padding: 2px 10px 3px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .mic-btn:active {
+      background: #dbeafe;
+      border-color: #93c5fd;
     }
   </style>
 </head>
 <body>
-  <!-- TRANSLATE BAR -->
+  <!-- TRANSLATE BAR (written only) -->
   <div style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:6px 12px;">
     <span class="small" style="font-family:system-ui;">🌍 Translate this entire page:</span>
     <div id="lang-buttons" style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px;">
@@ -215,6 +233,14 @@
     <div id="google_translate_element" style="display:inline-block;margin-left:6px;"></div>
   </div>
 
+  <!-- BIG STUDENT DIRECTIONS -->
+  <div class="student-banner">
+    <strong>📣 STUDENTS: WANT THIS READ TO YOU?</strong>
+    <span>On your Chromebook press <span class="key">Search</span> + <span class="key">S</span></span>
+    <span>Then <b>click and drag over the words</b> you want it to read.</span>
+    <span><small>If it doesn’t read, tell your teacher — that’s a Chromebook setting, not you.</small></span>
+  </div>
+
   <div class="wrap" id="app">
     <header>
       <div>
@@ -224,16 +250,11 @@
       <div style="text-align:right;">
         <div class="small">Submission subject:</div>
         <strong>Topic 2 Lesson 2 Boss Battle</strong>
-        <div class="small" style="margin-top:4px;">
-          <button type="button" id="readPage" style="background:none;border:0;color:#2563eb;cursor:pointer;">🔊 Read this in English</button>
-          <div id="ttsWarn" class="tts-warning">
-            If this Chromebook doesn’t read, use <b>Search + S</b> (Select-to-Speak) or ask your teacher to enable voices.
-          </div>
-        </div>
+        <div class="small" style="margin-top:4px;"><b>Need audio?</b> Use <span class="key">Search</span> + <span class="key">S</span> ➜ highlight text.</div>
       </div>
     </header>
 
-    <!-- custom text controls (like a ruler) -->
+    <!-- custom text controls -->
     <div class="a11y-panel">
       <div>
         <label for="fontFamily">Font</label>
@@ -255,7 +276,7 @@
       <div>
         <label for="letterSpacing">Letter spacing</label>
         <input type="range" id="letterSpacing" min="0" max="0.25" step="0.01" value="0" />
-        <div class="a11y-val">Current: <span id="letterSpacingVal">0em</span> (WCAG: ≤0.12em) :contentReference[oaicite:7]{index=7}</div>
+        <div class="a11y-val">Current: <span id="letterSpacingVal">0em</span></div>
       </div>
       <div>
         <label for="wordSpacing">Word spacing</label>
@@ -288,15 +309,10 @@
       <input type="text" id="hour" required placeholder="3rd, 5th, etc." />
     </div>
 
-    <!-- QUESTIONS (same as last version) -->
+    <!-- QUESTIONS -->
     <form id="bossForm" class="card">
-      <!-- Q5 -->
       <div class="question" data-q="q5">
-        <h3>
-          5. Which sentence uses the word <u>CULTURAL TRAIT</u> correctly?
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 16.</span>
-        </h3>
+        <h3>5. Which sentence uses the word <u>CULTURAL TRAIT</u> correctly? <span class="small">Topic 2, p. 16.</span></h3>
         <label class="mc-option"><input type="radio" name="q5" value="A" /> A. Akkadians and Sumerians shared cultural traits.</label>
         <label class="mc-option"><input type="radio" name="q5" value="B" /> B. Sumerians had a low supply of cultural traits.</label>
         <label class="mc-option"><input type="radio" name="q5" value="C" /> C. Cultural traits are never passed to other generations.</label>
@@ -304,13 +320,8 @@
         <div id="hint_q5" class="hint"></div>
       </div>
 
-      <!-- Q6 -->
       <div class="question" data-q="q6">
-        <h3>
-          6. Which sentence uses the word <u>GOVERN</u> correctly?
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 15.</span>
-        </h3>
+        <h3>6. Which sentence uses the word <u>GOVERN</u> correctly? <span class="small">Topic 2, p. 15.</span></h3>
         <label class="mc-option"><input type="radio" name="q6" value="A" /> A. I ate a box of candy, I am govern.</label>
         <label class="mc-option"><input type="radio" name="q6" value="B" /> B. There are many rules that govern our society.</label>
         <label class="mc-option"><input type="radio" name="q6" value="C" /> C. I had to duck because a govern was flying at me.</label>
@@ -318,13 +329,8 @@
         <div id="hint_q6" class="hint"></div>
       </div>
 
-      <!-- Q7 -->
       <div class="question" data-q="q7">
-        <h3>
-          7. Which sentence uses the word <u>ABUNDANT</u> correctly?
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 15.</span>
-        </h3>
+        <h3>7. Which sentence uses the word <u>ABUNDANT</u> correctly? <span class="small">Topic 2, p. 15.</span></h3>
         <label class="mc-option"><input type="radio" name="q7" value="A" /> A. The Fertile Crescent had abundant food/crops.</label>
         <label class="mc-option"><input type="radio" name="q7" value="B" /> B. The empty plate was full of abundance.</label>
         <label class="mc-option"><input type="radio" name="q7" value="C" /> C. A bow shot abundant.</label>
@@ -332,13 +338,8 @@
         <div id="hint_q7" class="hint"></div>
       </div>
 
-      <!-- Q8 -->
       <div class="question" data-q="q8">
-        <h3>
-          8. To control such a large empire, Sargon appointed local ________.
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 16.</span>
-        </h3>
+        <h3>8. To control such a large empire, Sargon appointed local ________. <span class="small">Topic 2, p. 16.</span></h3>
         <label class="mc-option"><input type="radio" name="q8" value="A" /> A. jesters</label>
         <label class="mc-option"><input type="radio" name="q8" value="B" /> B. warriors</label>
         <label class="mc-option"><input type="radio" name="q8" value="C" /> C. rulers</label>
@@ -346,13 +347,8 @@
         <div id="hint_q8" class="hint"></div>
       </div>
 
-      <!-- Q9 -->
       <div class="question" data-q="q9">
-        <h3>
-          9. Vocabulary Match
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">p. 15, 16, 19.</span>
-        </h3>
+        <h3>9. Vocabulary Match <span class="small">p. 15, 16, 19.</span></h3>
         <table style="width:100%;font-size:0.85rem;">
           <tr><td>Empire</td>
             <td>
@@ -436,50 +432,42 @@
         <div id="hint_q9" class="hint"></div>
       </div>
 
-      <!-- Fill-ins (10–15) -->
+      <!-- fill-ins with MIC -->
       <div class="question" data-q="q10">
-        <h3>
-          Fill in the Blank
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 15–16.</span>
-        </h3>
+        <h3>Fill in the Blank <span class="small">Topic 2, p. 15–16.</span></h3>
         <label>10. For __________ of years, the city-states fought among themselves.</label>
-        <input type="text" name="q10" />
-        <button type="button" class="mic-btn" data-mic="q10">🎤</button>
+        <input type="text" name="q10" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q10">🎤 Say it</button>
         <div id="hint_q10" class="hint"></div>
 
         <label>11. An _________ is a state containing several countries or territories.</label>
-        <input type="text" name="q11" />
-        <button type="button" class="mic-btn" data-mic="q11">🎤</button>
+        <input type="text" name="q11" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q11">🎤 Say it</button>
         <div id="hint_q11" class="hint"></div>
 
         <label>12. An ________ is an independent state that works with other states to achieve a shared goal.</label>
-        <input type="text" name="q12" />
-        <button type="button" class="mic-btn" data-mic="q12">🎤</button>
+        <input type="text" name="q12" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q12">🎤 Say it</button>
         <div id="hint_q12" class="hint"></div>
 
         <label>13. During the 2300s BCE, an Akkadian man named _________ became king of the Sumerian city-state of Kish.</label>
-        <input type="text" name="q13" />
-        <button type="button" class="mic-btn" data-mic="q13">🎤</button>
+        <input type="text" name="q13" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q13">🎤 Say it</button>
         <div id="hint_q13" class="hint"></div>
 
         <label>14. The Akkadians and Sumerians shared some__________.</label>
-        <input type="text" name="q14" />
-        <button type="button" class="mic-btn" data-mic="q14">🎤</button>
+        <input type="text" name="q14" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q14">🎤 Say it</button>
         <div id="hint_q14" class="hint"></div>
 
         <label>15. While the Fertile Crescent provided ____________ crops, it had few trees and did not provide any minerals.</label>
-        <input type="text" name="q15" />
-        <button type="button" class="mic-btn" data-mic="q15">🎤</button>
+        <input type="text" name="q15" class="stt-target" />
+        <button type="button" class="mic-btn" data-mic="q15">🎤 Say it</button>
         <div id="hint_q15" class="hint"></div>
       </div>
 
-      <!-- 16-22 etc. (same as previous) -->
       <div class="question" data-q="q16">
-        <h3>16. A set of laws that governed life in the Babylonian empire is called...
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>16. A set of laws that governed life in the Babylonian empire is called... <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q16" value="preamble" /> A. The Preamble</label>
         <label class="mc-option"><input type="radio" name="q16" value="constitution" /> B. The Constitution</label>
         <label class="mc-option"><input type="radio" name="q16" value="hammurabi" /> C. Hammurabi's Code</label>
@@ -488,10 +476,7 @@
       </div>
 
       <div class="question" data-q="q17">
-        <h3>17. The rule of law (Hammurabi's Code) established the idea that all members of a society must...
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>17. The rule of law (Hammurabi's Code) established the idea that all members of a society must... <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q17" value="obey" /> A. obey the law</label>
         <label class="mc-option"><input type="radio" name="q17" value="taxes" /> B. pay taxes</label>
         <label class="mc-option"><input type="radio" name="q17" value="liveclose" /> C. live close by</label>
@@ -500,10 +485,7 @@
       </div>
 
       <div class="question" data-q="q18">
-        <h3>18. Babylonian artists were known for their...
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>18. Babylonian artists were known for their... <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q18" value="farming" /> A. farming techniques</label>
         <label class="mc-option"><input type="radio" name="q18" value="pictures" /> B. pictures</label>
         <label class="mc-option"><input type="radio" name="q18" value="language" /> C. language</label>
@@ -512,10 +494,7 @@
       </div>
 
       <div class="question" data-q="q19">
-        <h3>19. The punishments were based on...
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>19. The punishments were based on... <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q19" value="gender" /> A. Gender</label>
         <label class="mc-option"><input type="radio" name="q19" value="social" /> B. Social class</label>
         <label class="mc-option"><input type="radio" name="q19" value="height" /> C. Height</label>
@@ -524,10 +503,7 @@
       </div>
 
       <div class="question" data-q="q20">
-        <h3>20. Who received the harshest punishments?
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>20. Who received the harshest punishments? <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q20" value="priests" /> A. Priests</label>
         <label class="mc-option"><input type="radio" name="q20" value="slaves" /> B. Slaves</label>
         <label class="mc-option"><input type="radio" name="q20" value="warriors" /> C. Warriors</label>
@@ -536,20 +512,14 @@
       </div>
 
       <div class="question" data-q="q21">
-        <h3>21. There was a minimum wage in Babylonia.
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>21. There was a minimum wage in Babylonia. <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q21" value="true" /> A. True</label>
         <label class="mc-option"><input type="radio" name="q21" value="false" /> B. False</label>
         <div id="hint_q21" class="hint"></div>
       </div>
 
       <div class="question" data-q="q22">
-        <h3>22. How many previous codes may have influenced Hammurabi?
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
+        <h3>22. How many previous codes may have influenced Hammurabi? <span class="small">Topic 2, p. 19.</span></h3>
         <label class="mc-option"><input type="radio" name="q22" value="1" /> A. 1</label>
         <label class="mc-option"><input type="radio" name="q22" value="2" /> B. 2</label>
         <label class="mc-option"><input type="radio" name="q22" value="3" /> C. 3</label>
@@ -557,17 +527,12 @@
         <div id="hint_q22" class="hint"></div>
       </div>
 
-      <!-- draw / explain -->
       <div class="question" data-q="q23">
-        <h3>
-          23. Show <u>CULTURAL TRAIT</u> (draw or explain)
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 16.</span>
-        </h3>
-        <textarea name="q23" rows="3" placeholder="Describe or list a cultural trait..."></textarea>
-        <button type="button" class="mic-btn" data-mic="q23">🎤</button>
+        <h3>23. Show <u>CULTURAL TRAIT</u> (draw or explain) <span class="small">Topic 2, p. 16.</span></h3>
+        <textarea name="q23" rows="3" class="stt-target" placeholder="Describe a cultural trait (shared language, clothing, religion, music, food)..."></textarea>
+        <button type="button" class="mic-btn" data-mic="q23">🎤 Say it</button>
         <p class="small" style="margin-top:6px;">Or draw it:</p>
-        <button type="button" class="mic-btn" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
+        <button type="button" class="primary secondary" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
         <label class="small">Paste link:</label>
         <input type="text" name="q23_drawing" placeholder="https://docs.google.com/drawings/..." />
         <label class="small">Or upload image:</label>
@@ -576,15 +541,11 @@
       </div>
 
       <div class="question" data-q="q24">
-        <h3>
-          24. Show <u>HAMMURABI'S CODE</u> (draw or explain)
-          <button type="button" class="read-q">🔊</button>
-          <span class="small">Topic 2, p. 19.</span>
-        </h3>
-        <textarea name="q24" rows="3" placeholder="Describe a rule and a punishment..."></textarea>
-        <button type="button" class="mic-btn" data-mic="q24">🎤</button>
+        <h3>24. Show <u>HAMMURABI'S CODE</u> (draw or explain) <span class="small">Topic 2, p. 19.</span></h3>
+        <textarea name="q24" rows="3" class="stt-target" placeholder="Describe a rule and a punishment (if someone..., then they...)"></textarea>
+        <button type="button" class="mic-btn" data-mic="q24">🎤 Say it</button>
         <p class="small" style="margin-top:6px;">Or draw it:</p>
-        <button type="button" class="mic-btn" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
+        <button type="button" class="primary secondary" onclick="window.open('https://docs.google.com/drawings','_blank')">🖍️ Open Google Drawing</button>
         <label class="small">Paste link:</label>
         <input type="text" name="q24_drawing" placeholder="https://docs.google.com/drawings/..." />
         <label class="small">Or upload image:</label>
@@ -619,13 +580,12 @@
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
-    // ===== CONFIG =====
     const SHEETS_WEBHOOK = "YOUR_WEB_APP_URL_HERE";
     const TEACHER_EMAIL  = "your-email@school.org";
     const EMAIL_SUBJECT  = "Topic 2 Lesson 2 Boss Battle";
-    const STORAGE_KEY    = "pixeled-topic2-l2-bossbattle-v8";
+    const STORAGE_KEY    = "pixeled-topic2-l2-bossbattle-no-tts-with-banner-and-mic";
 
-    // ===== TRANSLATION BUTTONS =====
+    // translate buttons
     function doGTranslate(langPair) {
       if (langPair.value) langPair = langPair.value;
       if (langPair === '') return;
@@ -646,7 +606,7 @@
       doGTranslate('en|' + lang);
     });
 
-    // ===== A11Y SLIDERS =====
+    // text controls
     const lineSlider = document.getElementById("lineHeight");
     const lineVal    = document.getElementById("lineHeightVal");
     const letterSlider = document.getElementById("letterSpacing");
@@ -683,7 +643,7 @@
       fontSelVal.textContent = fontSel.options[fontSel.selectedIndex].textContent;
     });
 
-    // ===== QUICK TOGGLES =====
+    // quick toggles
     const pills = document.querySelectorAll(".pill");
     const body  = document.body;
     let adhdMode = false;
@@ -718,61 +678,11 @@
       }
     });
 
-    // ===== ENGLISH TTS (Chromebook-safe as possible) =====
-    function getEnglishVoice() {
-      if (!window.speechSynthesis) return null;
-      const voices = window.speechSynthesis.getVoices();
-      if (!voices || !voices.length) return null;
-      let v = voices.find(v => v.lang === "en-US");
-      if (v) return v;
-      v = voices.find(v => v.lang && v.lang.startsWith("en"));
-      return v || null;
-    }
-    function speakEnglish(text) {
-      const warn = document.getElementById("ttsWarn");
-      if (!window.speechSynthesis) {
-        warn.style.display = "block";
-        return;
-      }
-      const voice = getEnglishVoice();
-      if (!voice) {
-        warn.style.display = "block";
-        return;
-      }
-      warn.style.display = "none";
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.voice = voice;
-      utter.lang = "en-US";
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utter);
-    }
-
-    // read whole page
-    document.getElementById("readPage").addEventListener("click", () => {
-      const main = document.getElementById("app");
-      const text = main ? main.innerText.replace(/\s+/g, " ").trim() : "Topic 2 Lesson 2 Boss Battle.";
-      speakEnglish(text);
-    });
-
-    // read individual questions (shorter = more reliable on ChromeOS) :contentReference[oaicite:8]{index=8}
-    document.querySelectorAll(".read-q").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const q = btn.closest(".question");
-        if (!q) return;
-        const h = q.querySelector("h3");
-        let text = h ? h.innerText.replace("🔊","").trim() : "Question.";
-        // also read choices but short
-        const choices = Array.from(q.querySelectorAll("label.mc-option")).map(l => l.innerText.trim()).slice(0,4);
-        if (choices.length) text += ". Choices: " + choices.join(". ");
-        speakEnglish(text);
-      });
-    });
-
-    // ===== speech-to-text (answers) =====
+    // SPEECH TO TEXT (MIC) — short answer and fill-in
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
     function startDictationFor(name) {
       if (!SpeechRec) {
-        alert("Speech recognition not supported in this browser.");
+        alert("This browser does not support speech-to-text. Try Chrome.");
         return;
       }
       const rec = new SpeechRec();
@@ -781,16 +691,30 @@
       rec.maxAlternatives = 1;
       rec.onresult = (e) => {
         const transcript = e.results[0][0].transcript;
-        const inp = document.querySelector(`[name="${name}"]`);
-        if (inp) inp.value = transcript.toLowerCase();
+        const el = document.querySelector(`[name="${name}"]`);
+        if (el) {
+          // if it's an input, insert; if textarea, append
+          if (el.tagName.toLowerCase() === "textarea") {
+            el.value = (el.value ? el.value + " " : "") + transcript;
+          } else {
+            el.value = transcript.toLowerCase();
+          }
+        }
+      };
+      rec.onerror = () => {
+        alert("Mic error. Check permissions.");
       };
       rec.start();
     }
-    document.querySelectorAll("[data-mic]").forEach(btn => {
-      btn.addEventListener("click", () => startDictationFor(btn.dataset.mic));
+    document.querySelectorAll(".mic-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetName = btn.dataset.mic;
+        if (!targetName) return;
+        startDictationFor(targetName);
+      });
     });
 
-    // ===== AUTOGRADER (same as before) =====
+    // AUTOGRADER (unchanged)
     const ANSWER_KEY = {
       q5: "A",
       q6: "B",
@@ -908,7 +832,7 @@
       return {score,total,wrong};
     }
 
-    // ===== LOCAL SAVE / LOAD =====
+    // local save/load
     function collectState(){
       const data={};
       data.student_email=document.getElementById("student_email").value;
@@ -991,7 +915,7 @@
       alert("Loaded saved progress.");
     });
 
-    // ===== SUBMIT =====
+    // submit
     const SUBMIT_BTN=document.getElementById("submitBtn");
     const SCORE_AREA=document.getElementById("scoreArea");
     SUBMIT_BTN.addEventListener("click", ()=>{
@@ -1037,19 +961,11 @@ Source: PixelED Path LLC`;
       }
     });
 
-    // ===== AUTO-LOAD =====
+    // auto-load
     (function(){
       const raw=localStorage.getItem(STORAGE_KEY);
       if(raw){
         try { applyState(JSON.parse(raw)); } catch(e){}
-      }
-      // try to prime voices on ChromeOS
-      if (window.speechSynthesis) {
-        window.speechSynthesis.getVoices();
-        setTimeout(() => {
-          const v = getEnglishVoice();
-          if (!v) document.getElementById("ttsWarn").style.display = "block";
-        }, 700);
       }
     })();
   </script>
